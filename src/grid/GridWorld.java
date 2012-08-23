@@ -30,7 +30,7 @@ public abstract class GridWorld {
     public static final int GOAL = 0;
 
     private int[][] grid;
-    private MazePoint robotLocation;
+    private DirectionalPoint robotLocation;
     private MazePoint goal;
 
     public GridWorld(MazePoint goal) {
@@ -40,7 +40,7 @@ public abstract class GridWorld {
 
         grid = initGrid(length, width);
 
-        robotLocation = new MazePoint(
+        robotLocation = new DirectionalPoint(Direction.FRONT,
                 goal.getX() <= 0 ? width - 1 : 0,
                 goal.getY() <= 0 ? length - 1 : 0);
     }
@@ -56,7 +56,7 @@ public abstract class GridWorld {
         return grid;
     }
 
-    public MazePoint getRobotLocation() {
+    public DirectionalPoint getRobotLocation() {
         return robotLocation;
     }
 
@@ -160,19 +160,24 @@ public abstract class GridWorld {
         return (int) Math.ceil(Math.abs(distance) / RobotConstants.ROBOT_LENGTH);
     }
 
-    public void updatePosition(PositionInGrid position) {
-        DirectionalPoint point = position.getCurrentPosition();
-
-        point.setX(point.getX() * RobotConstants.ROBOT_LENGTH);
-        point.setY(point.getY() * RobotConstants.ROBOT_LENGTH);
-    }
-
     public String printGrid(){
         String result = "";
         for (int i=grid.length - 1; i>=0; i--){
             for (int j=0; j<grid[i].length; j++){
                 if (j == getDistanceInCells(robotLocation.getX()) && i == getDistanceInCells(robotLocation.getY())){
-                    result += "R ";
+                    switch (robotLocation.getDirection()){
+                        case FRONT:
+                            result += "^ ";
+                            break;
+                        case BACK:
+                            result += "v ";
+                            break;
+                        case RIGHT:
+                            result += "> ";
+                            break;
+                        case LEFT:
+                            result += "< ";
+                    }
                 } else if(grid[i][j] == -1){
                     result += "W ";
                 } else if (grid[i][j] == -2){

@@ -1,6 +1,7 @@
 package grid;
 
 import console.ConsoleLogger;
+import console.LoggerProvider;
 import junit.framework.Assert;
 import main.RobotConstants;
 import maze.Direction;
@@ -14,7 +15,7 @@ import java.util.Arrays;
 public class SimulateActualMovement {
     @Test
     public void testUnreachableSpace(){
-        ConsoleLogger.initLogger(true);
+        LoggerProvider.initiateLogger(true, true);
         MazePoint goal = new MazePoint(1 * RobotConstants.ROBOT_LENGTH, 4 * RobotConstants.ROBOT_LENGTH);
         DynamicGridWorld gridWorld = new DynamicGridWorld(goal);
 

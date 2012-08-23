@@ -1,6 +1,7 @@
 package grid;
 
 import console.ConsoleLogger;
+import console.LoggerProvider;
 import junit.framework.Assert;
 import main.RobotConstants;
 import maze.Direction;
@@ -459,7 +460,7 @@ public class GridWorldTest {
 
     @Test
     public void testNoWay(){
-        ConsoleLogger.initLogger(true);
+        LoggerProvider.initiateLogger(true, true);
 
         MazePoint goal = new MazePoint(5 * RobotConstants.ROBOT_LENGTH, 5 * RobotConstants.ROBOT_LENGTH);
         DynamicGridWorld gridWorld = new DynamicGridWorld(goal);

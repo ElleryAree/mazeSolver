@@ -16,7 +16,7 @@ public class Sense implements SensorReadings{
     private int front;
 
     public Sense(){
-        Motor.A.setSpeed(200);
+        Motor.A.setSpeed(400);
         sonar = new UltrasonicSensor(SensorPort.S4);
     }
 

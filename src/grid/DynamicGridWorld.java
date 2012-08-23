@@ -25,7 +25,7 @@ public class DynamicGridWorld extends GridWorld {
         return result;
     }
 
-    private void getWay(MazePoint point, ArrayList<Direction> directions){
+    private void getWay(DirectionalPoint point, ArrayList<Direction> directions){
         int y = getDistanceInCells(point.getY());
         int x = getDistanceInCells(point.getX());
         if (getGrid()[y][x] == GOAL){
@@ -37,8 +37,30 @@ public class DynamicGridWorld extends GridWorld {
         if (nextPoint == null){
             return;
         }
-        directions.add(nextPoint.getDirection());
-//        getWay(nextPoint, directions);
+
+        switch (point.getDirection()){
+            case LEFT:
+                if (nextPoint.getDirection() == Direction.FRONT) directions.add(Direction.RIGHT);
+                if (nextPoint.getDirection() == Direction.LEFT) directions.add(Direction.FRONT);
+                if (nextPoint.getDirection() == Direction.RIGHT) directions.add(Direction.BACK);
+                if (nextPoint.getDirection() == Direction.BACK) directions.add(Direction.LEFT);
+                break;
+            case RIGHT:
+                if (nextPoint.getDirection() == Direction.FRONT) directions.add(Direction.LEFT);
+                if (nextPoint.getDirection() == Direction.LEFT) directions.add(Direction.BACK);
+                if (nextPoint.getDirection() == Direction.RIGHT) directions.add(Direction.FRONT);
+                if (nextPoint.getDirection() == Direction.BACK) directions.add(Direction.RIGHT);
+                break;
+            case BACK:
+                if (nextPoint.getDirection() == Direction.FRONT) directions.add(Direction.BACK);
+                if (nextPoint.getDirection() == Direction.LEFT) directions.add(Direction.RIGHT);
+                if (nextPoint.getDirection() == Direction.RIGHT) directions.add(Direction.LEFT);
+                if (nextPoint.getDirection() == Direction.BACK) directions.add(Direction.FRONT);
+                break;
+            case FRONT:
+                directions.add(nextPoint.getDirection());
+        }
+
     }
 
     protected void updateGrid() {

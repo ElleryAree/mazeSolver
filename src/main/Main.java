@@ -1,6 +1,7 @@
 package main;
 
 import console.ConsoleLogger;
+import console.LoggerProvider;
 import display.EnterInformation;
 import head.Sense;
 import lejos.nxt.*;
@@ -41,24 +42,26 @@ public class Main {
     }
 
     private static void loggerTest(){
-        ConsoleLogger.initLogger(false);
+        LoggerProvider.initiateLogger(false, false);
 
         Sense sense = new Sense();
         sense.senseIteration();
 
-        ConsoleLogger.getLogger().message("Left: " + sense.getLeft());
-        ConsoleLogger.getLogger().message("Right: " + sense.getRight());
-        ConsoleLogger.getLogger().message("Front: " + sense.getFront());
+        LoggerProvider.sendMessage("Left: " + sense.getLeft());
+        LoggerProvider.sendMessage("Right: " + sense.getRight());
+        LoggerProvider.sendMessage("Front: " + sense.getFront());
 
-        ConsoleLogger.getLogger().close();
+        LoggerProvider.closeLogger();
         System.out.println("Press any key again");
         Button.waitForAnyPress();
     }
 
     private static void maseSolve(String[] args) {
+        EnterInformation.showGreetings();
+        boolean useLogger = EnterInformation.enterLoggerSetting();
         MazePoint goal;
         boolean debugMode = args != null && args.length > 0;
-        ConsoleLogger.initLogger(debugMode);
+        LoggerProvider.initiateLogger(debugMode, useLogger);
 
         if (debugMode) {
             goal = new MazePoint(Double.valueOf(args[0]) * RobotConstants.ROBOT_LENGTH,
@@ -72,7 +75,7 @@ public class Main {
             }
         }
 
-        ConsoleLogger.getLogger().message("I will go to:\n" + goal);
+        LoggerProvider.sendMessage("I will go to:\n" + goal);
         LCD.drawString("I will go to:\n" + goal, 0, 0);
         if (!debugMode) {
             Button.waitForAnyPress();

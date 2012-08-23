@@ -42,7 +42,7 @@ public class MovementInMaze extends BasicMovement implements RunnerWithSenses {
         DirectionalPoint newPosition = new DirectionalPoint();
         newPosition.setX(currentPosition.getCurrentPosition().getX());
         newPosition.setY(currentPosition.getCurrentPosition().getY());
-        newPosition.setDirection(Direction.FRONT);
+        newPosition.setDirection(direction);
 
         switch (direction) {
             case LEFT: {
@@ -65,20 +65,6 @@ public class MovementInMaze extends BasicMovement implements RunnerWithSenses {
             }
         }
         forward((int) RobotConstants.ROBOT_LENGTH);
-        /*switch (direction) {
-            case LEFT: {
-                turn(-90);
-                break;
-            }
-            case RIGHT: {
-                turn(90);
-                break;
-            }
-            case BACK: {
-                turn(180);
-                break;
-            }
-        }*/
         position.setCurrentPosition(newPosition);
         getSense(position);
 

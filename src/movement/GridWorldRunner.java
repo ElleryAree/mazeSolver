@@ -1,6 +1,7 @@
 package movement;
 
 import console.ConsoleLogger;
+import console.LoggerProvider;
 import grid.DynamicGridWorld;
 import grid.GridWorld;
 import grid.PositionInGrid;
@@ -30,7 +31,7 @@ public class GridWorldRunner {
         try{
             runDangerouse();
         } catch (Throwable e){
-            ConsoleLogger.getLogger().message("Ooops: " + e.getMessage());
+            LoggerProvider.sendMessage("Ooops: " + e.getMessage());
         }
     }
 
@@ -38,35 +39,35 @@ public class GridWorldRunner {
         PositionInGrid position = new PositionInGrid();
         position.setCurrentPosition(new DirectionalPoint(Direction.FRONT, 0, 0));
         movement.getSense(position);
-        ConsoleLogger.getLogger().message("I was set here: " + position);
+        LoggerProvider.sendMessage("I was set here: " + position);
 
         Direction direction = gridWorld.actualize(position);
 
 
         while (direction != null){
-            ConsoleLogger.getLogger().message("I'm here: " + position);
-            ConsoleLogger.getLogger().message("That's what I think I'm in:\n" + printGrid());
-            ConsoleLogger.getLogger().message("Next action:\n" + direction);
+            LoggerProvider.sendMessage("I'm here: " + position);
+            LoggerProvider.sendMessage("That's what I think I'm in:\n" + printGrid());
+            LoggerProvider.sendMessage("Next action:\n" + direction);
 
             history.add(direction);
             position = movement.move(direction, position);
             direction = gridWorld.actualize(position);
             if (isGoal(position)){
                 LCD.drawString("DONE!!!", 0, 3);
-                ConsoleLogger.getLogger().message("Done");
+                LoggerProvider.sendMessage("Done");
                 break;
             }
 
             if (direction == null){
                 LCD.drawString("Failed :(", 0, 3);
-                ConsoleLogger.getLogger().message("Failed");
+                LoggerProvider.sendMessage("Failed");
                 break;
             }
 
             printGrid();
         }
 
-        ConsoleLogger.getLogger().message(history.toString());
+        LoggerProvider.sendMessage(history.toString());
     }
 
     private boolean isGoal(PositionInGrid position) {

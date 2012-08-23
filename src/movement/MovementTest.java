@@ -2,6 +2,7 @@ package movement;
 
 
 import console.ConsoleLogger;
+import console.LoggerProvider;
 import grid.PositionInGrid;
 import lejos.nxt.Button;
 import maze.Direction;
@@ -25,7 +26,7 @@ public class MovementTest {
         directions.add(Direction.LEFT);
         directions.add(Direction.BACK);
 
-        ConsoleLogger.getLogger().message("Plan is" + directions);
+        LoggerProvider.sendMessage("Plan is" + directions);
         for (Direction direction: directions){
             positionInGrid = movementInMaze.move(direction, positionInGrid);
         }
