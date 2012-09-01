@@ -2,7 +2,7 @@ package localization;
 
 import head.SensorReadings;
 import main.RobotConstants;
-import maze.Direction;
+import localization.maze.Direction;
 
 import java.util.ArrayList;
 

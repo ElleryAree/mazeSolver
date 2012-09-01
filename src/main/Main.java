@@ -1,12 +1,11 @@
 package main;
 
-import console.ConsoleLogger;
 import console.LoggerProvider;
 import display.EnterInformation;
 import head.Sense;
 import lejos.nxt.*;
 import lejos.robotics.objectdetection.*;
-import maze.MazePoint;
+import localization.maze.MazePoint;
 import movement.*;
 
 /**

@@ -1,11 +1,10 @@
 package movement;
 
-import grid.GridWorld;
-import grid.PositionInGrid;
-import head.Sense;
+import localization.grid.GridWorld;
+import localization.grid.PositionInGrid;
 import main.RobotConstants;
-import maze.Direction;
-import maze.DirectionalPoint;
+import localization.maze.Direction;
+import localization.maze.DirectionalPoint;
 
 /**
  * Date: 8/19/12

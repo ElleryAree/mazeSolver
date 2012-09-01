@@ -2,7 +2,7 @@ package display;
 
 import lejos.nxt.*;
 import main.RobotConstants;
-import maze.MazePoint;
+import localization.maze.MazePoint;
 
 /**
  * Date: 8/19/12

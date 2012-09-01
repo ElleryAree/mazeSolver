@@ -1,7 +1,7 @@
-package maze;
+package localization.maze;
 
 /**
- * Sensed point of a wall of the maze.
+ * Sensed point of a wall of the localization.maze.
  *
  * Date: 8/13/12
  * Time: 2:42 AM

@@ -1,12 +1,11 @@
 package movement;
 
 
-import console.ConsoleLogger;
 import console.LoggerProvider;
-import grid.PositionInGrid;
+import localization.grid.PositionInGrid;
 import lejos.nxt.Button;
-import maze.Direction;
-import maze.DirectionalPoint;
+import localization.maze.Direction;
+import localization.maze.DirectionalPoint;
 
 import java.util.ArrayList;
 

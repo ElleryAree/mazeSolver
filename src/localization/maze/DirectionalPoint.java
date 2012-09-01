@@ -1,4 +1,4 @@
-package maze;
+package localization.maze;
 
 /**
  * Date: 8/17/12

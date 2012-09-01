@@ -1,8 +1,7 @@
 package movement;
 
-import grid.PositionInGrid;
-import head.Sense;
-import maze.Direction;
+import localization.grid.PositionInGrid;
+import localization.maze.Direction;
 
 /**
  * Date: 8/19/12

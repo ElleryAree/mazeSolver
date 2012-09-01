@@ -1,7 +1,7 @@
-package maze;
+package localization.maze;
 
 /**
- * Wall of the maze.
+ * Wall of the localization.maze.
  *
  * User: elleryaree
  * Date: 8/13/12

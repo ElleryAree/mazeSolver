@@ -1,4 +1,4 @@
-package maze;
+package localization.maze;
 
 import java.util.ArrayList;
 

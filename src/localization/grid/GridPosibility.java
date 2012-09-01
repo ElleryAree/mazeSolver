@@ -1,4 +1,4 @@
-package grid;
+package localization.grid;
 
 /**
  * Date: 8/18/12

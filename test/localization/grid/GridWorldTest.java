@@ -1,12 +1,11 @@
-package grid;
+package localization.grid;
 
-import console.ConsoleLogger;
 import console.LoggerProvider;
 import junit.framework.Assert;
 import main.RobotConstants;
-import maze.Direction;
-import maze.DirectionalPoint;
-import maze.MazePoint;
+import localization.maze.Direction;
+import localization.maze.DirectionalPoint;
+import localization.maze.MazePoint;
 import org.junit.Test;
 
 import java.util.Arrays;

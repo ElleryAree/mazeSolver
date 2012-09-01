@@ -1,11 +1,10 @@
 package movement;
 
 
-import grid.GridWorld;
-import grid.PositionInGrid;
-import head.FakeSense;
+import localization.grid.GridWorld;
+import localization.grid.PositionInGrid;
 import main.RobotConstants;
-import maze.Direction;
+import localization.maze.Direction;
 
 public class FakeRunner extends MovementInMaze {
     private int[][] grid;

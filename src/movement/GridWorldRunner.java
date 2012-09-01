@@ -1,18 +1,15 @@
 package movement;
 
-import console.ConsoleLogger;
 import console.LoggerProvider;
-import grid.DynamicGridWorld;
-import grid.GridWorld;
-import grid.PositionInGrid;
-import lejos.nxt.Button;
+import localization.grid.DynamicGridWorld;
+import localization.grid.GridWorld;
+import localization.grid.PositionInGrid;
 import lejos.nxt.LCD;
-import maze.Direction;
-import maze.DirectionalPoint;
-import maze.MazePoint;
+import localization.maze.Direction;
+import localization.maze.DirectionalPoint;
+import localization.maze.MazePoint;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Date: 8/19/12

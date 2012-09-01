@@ -1,14 +1,14 @@
 package movement;
 
-import grid.PositionInGrid;
+import localization.grid.PositionInGrid;
 import head.Sense;
 import head.SensorReadings;
 import main.RobotConstants;
-import maze.Direction;
-import maze.DirectionalPoint;
+import localization.maze.Direction;
+import localization.maze.DirectionalPoint;
 
 /**
- * Class for movements in the maze:
+ * Class for movements in the localization.maze:
  * sense walls after each move.
  * <p/>
  * User: elleryaree
@@ -46,25 +46,23 @@ public class MovementInMaze extends BasicMovement implements RunnerWithSenses {
 
         switch (direction) {
             case LEFT: {
-                turn(90);
-                newPosition.setX(newPosition.getX() - (int) RobotConstants.ROBOT_LENGTH);
+                newPosition.setX(newPosition.getX() - RobotConstants.ROBOT_LENGTH);
                 break;
             }
             case RIGHT: {
-                turn(-90);
-                newPosition.setX(newPosition.getX() + (int) RobotConstants.ROBOT_LENGTH);
+                newPosition.setX(newPosition.getX() + RobotConstants.ROBOT_LENGTH);
                 break;
             }
             case BACK: {
-                turn(180);
-                newPosition.setY(newPosition.getY() - (int) RobotConstants.ROBOT_LENGTH);
+                newPosition.setY(newPosition.getY() - RobotConstants.ROBOT_LENGTH);
                 break;
             }
             case FRONT:{
-                newPosition.setY(newPosition.getY() + (int) RobotConstants.ROBOT_LENGTH);
+                newPosition.setY(newPosition.getY() + RobotConstants.ROBOT_LENGTH);
             }
         }
-        forward((int) RobotConstants.ROBOT_LENGTH);
+        turn(direction.getDegrees());
+        forward(RobotConstants.ROBOT_LENGTH);
         position.setCurrentPosition(newPosition);
         getSense(position);
 

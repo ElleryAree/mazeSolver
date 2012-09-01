@@ -1,11 +1,9 @@
-package grid;
+package localization.grid;
 
-import console.ConsoleLogger;
-import lejos.nxt.Button;
 import main.RobotConstants;
-import maze.Direction;
-import maze.DirectionalPoint;
-import maze.MazePoint;
+import localization.maze.Direction;
+import localization.maze.DirectionalPoint;
+import localization.maze.MazePoint;
 
 import java.util.ArrayList;
 /*

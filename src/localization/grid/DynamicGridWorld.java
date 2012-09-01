@@ -1,8 +1,8 @@
-package grid;
+package localization.grid;
 
-import maze.Direction;
-import maze.DirectionalPoint;
-import maze.MazePoint;
+import localization.maze.Direction;
+import localization.maze.DirectionalPoint;
+import localization.maze.MazePoint;
 
 import java.util.ArrayList;
 //import java.util.Collections;

@@ -1,9 +1,9 @@
 package head;
 
-import grid.GridWorld;
-import grid.PositionInGrid;
+import localization.grid.GridWorld;
+import localization.grid.PositionInGrid;
 import main.RobotConstants;
-import maze.Direction;
+import localization.maze.Direction;
 
 public class FakeSense implements SensorReadings{
 

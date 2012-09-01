@@ -1,7 +1,6 @@
-package grid;
+package localization.grid;
 
-import maze.DirectionalPoint;
-import maze.MazePoint;
+import localization.maze.DirectionalPoint;
 
 /**
  * Date: 8/17/12

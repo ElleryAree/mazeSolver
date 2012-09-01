@@ -1,7 +1,7 @@
 package movement;
 
 import main.RobotConstants;
-import maze.MazePoint;
+import localization.maze.MazePoint;
 import org.junit.Test;
 
 /**
