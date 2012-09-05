@@ -26,6 +26,9 @@ public abstract class GridWorld {
     public static final int WALL = -1;
     public static final int EMPTY = -2;
     public static final int GOAL = 0;
+    public static final int MAX_SENSOR_MEASUREMENT = 255;
+    public static final int MAX_WALL_DISTANCE_IN_CELLS = 3;
+    public static final int MAX_WALL_DISTANCE = RobotConstants.ROBOT_LENGTH * MAX_WALL_DISTANCE_IN_CELLS;
 
     private int[][] grid;
     private DirectionalPoint robotLocation;
@@ -76,10 +79,23 @@ public abstract class GridWorld {
         int x = getDistanceInCells(position.getCurrentPosition().getX());
         int y = getDistanceInCells(position.getCurrentPosition().getY());
 
-        int coordinateOfTheWallOnTheLeft = x - (position.getLeftMeasurement() < 255 ? getDistanceInCells(position.getLeftMeasurement()) : x);
-        int coordinateOfTheWallOnTheRight = x + (position.getRightMeasurement() < 255 ? getDistanceInCells(position.getRightMeasurement()) : 0);
-        int coordinateOfTheWallInFront = y + (position.getFrontMeasurement() < 255 ? getDistanceInCells(position.getFrontMeasurement()) : 0);
-        int coordinateOfTheWallOnTheBack = y - (position.getBackMeasure() < 255 ? getDistanceInCells(position.getBackMeasure()) : y);
+        int coordinateOfTheWallOnTheLeft = x - (position.getLeftMeasurement() < MAX_SENSOR_MEASUREMENT ? getDistanceInCells(position.getLeftMeasurement()) : x);
+        int coordinateOfTheWallOnTheRight = x + (position.getRightMeasurement() < MAX_SENSOR_MEASUREMENT ? getDistanceInCells(position.getRightMeasurement()) : 0);
+        int coordinateOfTheWallInFront = y + (position.getFrontMeasurement() < MAX_SENSOR_MEASUREMENT ? getDistanceInCells(position.getFrontMeasurement()) : 0);
+        int coordinateOfTheWallOnTheBack = y - (position.getBackMeasure() < MAX_SENSOR_MEASUREMENT ? getDistanceInCells(position.getBackMeasure()) : y);
+
+        if (coordinateOfTheWallOnTheLeft < x - MAX_WALL_DISTANCE_IN_CELLS){
+            coordinateOfTheWallOnTheLeft = x - MAX_WALL_DISTANCE_IN_CELLS;
+        }
+        if (coordinateOfTheWallOnTheRight > x + MAX_WALL_DISTANCE_IN_CELLS){
+            coordinateOfTheWallOnTheRight = x + MAX_WALL_DISTANCE_IN_CELLS;
+        }
+        if (coordinateOfTheWallInFront > y + MAX_WALL_DISTANCE_IN_CELLS){
+            coordinateOfTheWallInFront = y + MAX_WALL_DISTANCE_IN_CELLS;
+        }
+        if (coordinateOfTheWallOnTheBack < y - MAX_WALL_DISTANCE_IN_CELLS){
+            coordinateOfTheWallOnTheBack = y - MAX_WALL_DISTANCE_IN_CELLS;
+        }
 
         int plusToX = coordinateOfTheWallOnTheLeft < 0 ? -1 * coordinateOfTheWallOnTheLeft : 0;
         int plusToY = coordinateOfTheWallOnTheBack < 0 ? -1 * coordinateOfTheWallOnTheBack : 0;
@@ -107,13 +123,13 @@ public abstract class GridWorld {
         grid = newGrid;
 
 
-        if (position.getLeftMeasurement() < 255)
+        if (position.getLeftMeasurement() < MAX_WALL_DISTANCE)
             grid[y + plusToY][coordinateOfTheWallOnTheLeft + plusToX] = WALL;
-        if (position.getRightMeasurement() < 255)
+        if (position.getRightMeasurement() < MAX_WALL_DISTANCE)
             grid[y+ plusToY][coordinateOfTheWallOnTheRight + plusToX] = WALL;
-        if (position.getFrontMeasurement() < 255)
+        if (position.getFrontMeasurement() < MAX_WALL_DISTANCE)
             grid[coordinateOfTheWallInFront + plusToY][x + plusToX] = WALL;
-        if (position.getBackMeasure() < 255)
+        if (position.getBackMeasure() < MAX_WALL_DISTANCE)
             grid[coordinateOfTheWallOnTheBack + plusToY][x + plusToX] = WALL;
     }
 

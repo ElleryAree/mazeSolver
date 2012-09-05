@@ -38,6 +38,7 @@ public class DynamicGridWorld extends GridWorld {
             return;
         }
 
+        //TODO: это нужно переделать на градусы
         switch (point.getDirection()){
             case LEFT:
                 if (nextPoint.getDirection() == Direction.FRONT) directions.add(Direction.RIGHT);

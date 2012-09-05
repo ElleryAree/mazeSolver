@@ -15,7 +15,11 @@ import movement.*;
  * Date: 8/11/12
  */
 public class Main {
+    private static boolean debugMode;
+
     public static void main(String[] args) throws InterruptedException {
+        debugMode = args != null && args.length > 0;
+
         assertHit();
         maseSolve(args);
 //        testMovement();
@@ -27,6 +31,10 @@ public class Main {
     }
 
     private static void assertHit(){
+        if (debugMode){
+            return;
+        }
+
         FeatureDetector fd1 = new TouchFeatureDetector(new TouchSensor(SensorPort.S2));
         FeatureDetector fd2 = new TouchFeatureDetector(new TouchSensor(SensorPort.S1));
 
@@ -56,10 +64,14 @@ public class Main {
     }
 
     private static void maseSolve(String[] args) {
+        boolean useLogger = true;
+        if (!debugMode){
         EnterInformation.showGreetings();
-        boolean useLogger = EnterInformation.enterLoggerSetting();
+        useLogger = EnterInformation.enterLoggerSetting();
+        }
+
         MazePoint goal;
-        boolean debugMode = args != null && args.length > 0;
+
         LoggerProvider.initiateLogger(debugMode, useLogger);
 
         if (debugMode) {
@@ -75,7 +87,7 @@ public class Main {
         }
 
         LoggerProvider.sendMessage("I will go to:\n" + goal);
-        LCD.drawString("I will go to:\n" + goal, 0, 0);
+        System.out.print("I will go to:\n" + goal);
         if (!debugMode) {
             Button.waitForAnyPress();
         }

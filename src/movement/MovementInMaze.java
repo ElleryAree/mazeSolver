@@ -42,9 +42,51 @@ public class MovementInMaze extends BasicMovement implements RunnerWithSenses {
         DirectionalPoint newPosition = new DirectionalPoint();
         newPosition.setX(currentPosition.getCurrentPosition().getX());
         newPosition.setY(currentPosition.getCurrentPosition().getY());
-        newPosition.setDirection(direction);
+        Direction currentDirection = currentPosition.getCurrentPosition().getDirection();
 
         switch (direction) {
+            case LEFT: {
+                if (currentDirection == Direction.LEFT){
+                    newPosition.setDirection(Direction.BACK);
+                } else if (currentDirection == Direction.BACK){
+                    newPosition.setDirection(Direction.RIGHT);
+                } else if (currentDirection == Direction.RIGHT){
+                    newPosition.setDirection(Direction.FRONT);
+                } else{
+                    newPosition.setDirection(Direction.LEFT);
+                }
+                break;
+            }
+            case RIGHT: {
+                if (currentDirection == Direction.LEFT){
+                    newPosition.setDirection(Direction.FRONT);
+                } else if (currentDirection == Direction.BACK){
+                    newPosition.setDirection(Direction.LEFT);
+                } else if (currentDirection == Direction.RIGHT){
+                    newPosition.setDirection(Direction.BACK);
+                } else{
+                    newPosition.setDirection(Direction.RIGHT);
+                }
+                break;
+            }
+            case BACK: {
+                if (currentDirection == Direction.LEFT){
+                    newPosition.setDirection(Direction.RIGHT);
+                } else if (currentDirection == Direction.BACK){
+                    newPosition.setDirection(Direction.FRONT);
+                } else if (currentDirection == Direction.RIGHT){
+                    newPosition.setDirection(Direction.LEFT);
+                } else{
+                    newPosition.setDirection(Direction.BACK);
+                }
+                break;
+            }
+            case FRONT:{
+                newPosition.setDirection(direction);
+            }
+        }
+
+        switch (newPosition.getDirection()) {
             case LEFT: {
                 newPosition.setX(newPosition.getX() - RobotConstants.ROBOT_LENGTH);
                 break;

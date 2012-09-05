@@ -26,29 +26,28 @@ public class GridWorldRunner {
     }
     public void run(){
         try{
-            runDangerouse();
+            runDangerous();
         } catch (Throwable e){
             LoggerProvider.sendMessage("Ooops: " + e.getMessage());
         }
     }
 
-    public void runDangerouse(){
+    public void runDangerous(){
         PositionInGrid position = new PositionInGrid();
         position.setCurrentPosition(new DirectionalPoint(Direction.FRONT, 0, 0));
         movement.getSense(position);
-        LoggerProvider.sendMessage("I was set here: " + position);
 
         Direction direction = gridWorld.actualize(position);
 
+        logState(position, direction);
 
         while (direction != null){
-            LoggerProvider.sendMessage("I'm here: " + position);
-            LoggerProvider.sendMessage("That's what I think I'm in:\n" + printGrid());
-            LoggerProvider.sendMessage("Next action:\n" + direction);
-
             history.add(direction);
             position = movement.move(direction, position);
             direction = gridWorld.actualize(position);
+
+            logState(position, direction);
+
             if (isGoal(position)){
                 LCD.drawString("DONE!!!", 0, 3);
                 LoggerProvider.sendMessage("Done");
@@ -65,6 +64,12 @@ public class GridWorldRunner {
         }
 
         LoggerProvider.sendMessage(history.toString());
+    }
+
+    private void logState(PositionInGrid position, Direction direction) {
+        LoggerProvider.sendMessage("I'm here: " + position);
+        LoggerProvider.sendMessage("That's what I think I'm in:\n" + printGrid());
+        LoggerProvider.sendMessage("Next action:\n" + direction);
     }
 
     private boolean isGoal(PositionInGrid position) {
