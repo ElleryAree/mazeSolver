@@ -1,11 +1,11 @@
 package localization.grid;
 
-import main.RobotConstants;
 import localization.maze.Direction;
 import localization.maze.DirectionalPoint;
 import localization.maze.MazePoint;
+import main.RobotConstants;
 
-import java.util.ArrayList;
+import java.util.*;
 /*
 Grid[6][5]
 
@@ -33,11 +33,13 @@ public abstract class GridWorld {
     private int[][] grid;
     private DirectionalPoint robotLocation;
     private MazePoint goal;
+    private int initialValue;
 
-    public GridWorld(MazePoint goal) {
+    public GridWorld(MazePoint goal, int initialValue) {
         int length = getDistanceInCells(goal.getY());
         int width = (int) Math.ceil(Math.abs(goal.getX()) / RobotConstants.ROBOT_LENGTH);
         this.goal = new MazePoint(goal.getX() > 0 ? width - 1 : 0, goal.getY() > 0 ? length - 1 : 0);
+        this.initialValue = initialValue;
 
         grid = initGrid(length, width);
 
@@ -51,7 +53,7 @@ public abstract class GridWorld {
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
                 if (i != goal.getY() || j != goal.getX())
-                    grid[i][j] = EMPTY;
+                    grid[i][j] = initialValue;
             }
         }
         return grid;
@@ -61,19 +63,14 @@ public abstract class GridWorld {
         return robotLocation;
     }
 
-    public MazePoint getGoal() {
-        return goal;
-    }
-
     public Direction actualize(PositionInGrid position) {
         PositionInGrid rotatedPosition = rotateMeasurements(position);
         increaseGridAndUpdateWalls(rotatedPosition);
 
-        ArrayList<Direction> way = findWay();
-        return way.isEmpty()? null : way.get(0);
+        return findWay();
     }
 
-    protected abstract ArrayList<Direction> findWay();
+    protected abstract Direction findWay();
 
     protected void increaseGridAndUpdateWalls(PositionInGrid position) {
         int x = getDistanceInCells(position.getCurrentPosition().getX());
@@ -174,7 +171,7 @@ public abstract class GridWorld {
         return (int) Math.ceil(Math.abs(distance) / RobotConstants.ROBOT_LENGTH);
     }
 
-    public String printGrid(){
+    public String printGrid(int[][] grid, DirectionalPoint robotLocation){
         String result = "";
         for (int i=grid.length - 1; i>=0; i--){
             for (int j=0; j<grid[i].length; j++){
@@ -205,4 +202,49 @@ public abstract class GridWorld {
 
         return result;
     }
+
+    public String printGrid(){
+        return printGrid(this.grid, this.robotLocation);
+    }
+
+    public MazePoint getGoal() {
+        return goal;
+    }
+
+    protected List<DirectionalPoint> initAllPossibleActions(int i, int j) {
+        List<DirectionalPoint> actions = new ArrayList<DirectionalPoint>();
+
+        addAction(i, j - 1, Direction.LEFT, actions);
+        addAction(i, j + 1, Direction.RIGHT, actions);
+        addAction(i + 1, j, Direction.FRONT, actions);
+        addAction(i - 1, j, Direction.BACK, actions);
+
+        return actions;
+    }
+
+    private void addAction(int i, int j, Direction direction, List<DirectionalPoint> actions) {
+        if (i >= 0 && i < getGrid().length &&
+                j >= 0 && j < getGrid()[i].length &&
+                (getGrid()[i][j] != EMPTY && getGrid()[i][j] != WALL))
+            actions.add(new DirectionalPoint(direction, j, i));
+    }
+
+    /*private class DirectionPointComparator implements Comparator<DirectionalPoint> {
+        private MazePoint goal;
+
+        public DirectionPointComparator(MazePoint goal) {
+            this.goal = goal;
+        }
+
+        @Override
+        public int compare(DirectionalPoint directionalPoint, DirectionalPoint directionalPoint1) {
+            int distance = (goal.getX() - directionalPoint.getX()) + (goal.getY() - directionalPoint.getY());
+            int distance1 = (goal.getX() - directionalPoint1.getX()) + (goal.getY() - directionalPoint1.getY());
+
+            if (distance1 > distance) return 1;
+            if (distance1 <= distance) return -1;
+
+            return 0;
+        }
+    }*/
 }

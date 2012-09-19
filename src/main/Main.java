@@ -1,5 +1,6 @@
 package main;
 
+import clustering.DataCollector;
 import console.LoggerProvider;
 import display.EnterInformation;
 import head.Sense;
@@ -24,6 +25,8 @@ public class Main {
         maseSolve(args);
 //        testMovement();
 //        loggerTest();
+
+//        sensorTest();
     }
 
     private static void testMovement(){
@@ -111,5 +114,14 @@ public class Main {
             LCD.drawString("Complited", 0, 4);
             Button.waitForAnyPress();
         }
+    }
+
+    /**
+     * Entry point for testing usage of clustering,
+     * based on many sonic sensor's readings
+     */
+    private static void sensorTest(){
+        DataCollector collector = new DataCollector();
+        collector.collectAndPrecess();
     }
 }

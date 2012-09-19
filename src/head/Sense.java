@@ -1,12 +1,9 @@
 package head;
 
-import console.ConsoleLogger;
 import lejos.nxt.Motor;
 import lejos.nxt.SensorPort;
 import lejos.nxt.Sound;
 import lejos.nxt.UltrasonicSensor;
-
-import java.util.Arrays;
 
 public class Sense implements SensorReadings{
     private final UltrasonicSensor sonar;
@@ -20,18 +17,23 @@ public class Sense implements SensorReadings{
         sonar = new UltrasonicSensor(SensorPort.S4);
     }
 
-    private void turn(int degrees) {
+    void turn(int degrees) {
         Motor.A.rotate(degrees * 2);
     }
 
     private int sense(){
+        int[] distances = senceDistances();
+
+        return getMinimumDistance(distances);
+    }
+
+    protected int[] senceDistances() {
         int[] distances = new int[8];
 
         sonar.ping();
         Sound.pause(30);
         sonar.getDistances(distances);
-
-        return getMinimumDistance(distances);
+        return distances;
     }
 
     public void senseIteration() {

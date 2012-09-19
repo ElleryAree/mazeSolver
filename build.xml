@@ -108,8 +108,8 @@
 			<sysproperty key="nxj.home" file="${nxj.home}"/>
 			<jvmarg value="${d32Flag}" />
 			<classpath refid="lejos.pc" />
-            <arg value="-b" />
-            <arg value="-d00165316E5FF" />
+            <!--<arg value="-b" />-->
+            <!--<arg value="-d00165316E5FF" />-->
 			<arg value="${output.nxj}" />
 		</java>
 	</target>

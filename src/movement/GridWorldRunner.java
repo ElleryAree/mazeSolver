@@ -1,10 +1,10 @@
 package movement;
 
 import console.LoggerProvider;
-import localization.grid.DynamicGridWorld;
+import lejos.nxt.LCD;
 import localization.grid.GridWorld;
 import localization.grid.PositionInGrid;
-import lejos.nxt.LCD;
+import localization.grid.aStar.AStarGridWorld;
 import localization.maze.Direction;
 import localization.maze.DirectionalPoint;
 import localization.maze.MazePoint;
@@ -20,7 +20,7 @@ public class GridWorldRunner {
     private ArrayList<Direction> history;
 
     public GridWorldRunner(MazePoint goal, RunnerWithSenses runner) {
-        gridWorld = new DynamicGridWorld(goal);
+        gridWorld = new AStarGridWorld(goal);
         movement = runner;
         history = new ArrayList<Direction>();
     }

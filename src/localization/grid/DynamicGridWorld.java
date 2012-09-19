@@ -5,6 +5,7 @@ import localization.maze.DirectionalPoint;
 import localization.maze.MazePoint;
 
 import java.util.ArrayList;
+import java.util.List;
 //import java.util.Collections;
 //import java.util.Comparator;
 
@@ -13,16 +14,16 @@ import java.util.ArrayList;
  */
 public class DynamicGridWorld extends GridWorld {
     public DynamicGridWorld(MazePoint goal) {
-        super(goal);
+        super(goal, EMPTY);
     }
 
     @Override
-    protected ArrayList<Direction> findWay() {
+    protected Direction findWay() {
         updateGrid();
         ArrayList<Direction> result = new ArrayList<Direction>();
         getWay(getRobotLocation(), result);
 
-        return result;
+        return result.get(0);
     }
 
     private void getWay(DirectionalPoint point, ArrayList<Direction> directions){
@@ -90,24 +91,12 @@ public class DynamicGridWorld extends GridWorld {
     }
 
     private MazePoint getMinimumPoint(int i, int j) {
-        ArrayList<MazePoint> actions = new ArrayList<MazePoint>(4);
-
-        addAction(i, j - 1, Direction.LEFT, actions);
-        addAction(i, j + 1, Direction.RIGHT, actions);
-        addAction(i + 1, j, Direction.FRONT, actions);
-        addAction(i - 1, j, Direction.BACK, actions);
+        List<DirectionalPoint> actions = initAllPossibleActions(i, j);
 
         return getMin(actions);
     }
 
-    private void addAction(int i, int j, Direction direction, ArrayList<MazePoint> actions) {
-        if (i >= 0 && i < getGrid().length &&
-                j >= 0 && j < getGrid()[i].length &&
-                (getGrid()[i][j] != EMPTY && getGrid()[i][j] != WALL))
-            actions.add(new DirectionalPoint(direction, j, i));
-    }
-
-    private MazePoint getMin(ArrayList<MazePoint> mazePoints){
+    private MazePoint getMin(List<DirectionalPoint> mazePoints){
         int minValue = 0;
         MazePoint minPoint = null;
 
