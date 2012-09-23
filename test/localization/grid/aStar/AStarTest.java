@@ -29,14 +29,75 @@ public class AStarTest {
         System.out.print(gridWorld.printGrid());
 
         gridWorld.actualize(position);
-        List<AStarGridPoint> route = gridWorld.getRoute();
+        List<DirectionalPoint> route = gridWorld.getPossibleRoutes();
 
 
-        for (AStarGridPoint point: route){
-            grid[point.getPoint().getY()][point.getPoint().getX()] = point.getStep();
+        int i = 0;
+        for (DirectionalPoint point: route){
+            grid[point.getY()][point.getX()] = i++;
         }
 
         System.out.println(route);
-        System.out.println(gridWorld.printGrid(grid, position.getCurrentPosition()));
+        System.out.println(gridWorld.printGrid(grid, new DirectionalPoint(Direction.FRONT, -1, -1)));
+    }
+
+    @Test
+    public void testCompleteWall(){
+        MazePoint goal = new MazePoint(5 * ROBOT_LENGTH, 5 * ROBOT_LENGTH);
+        AStarGridWorld gridWorld = new AStarGridWorld(goal);
+
+        PositionInGrid position = new PositionInGrid();
+        position.setCurrentPosition(new DirectionalPoint(Direction.FRONT, 2, 0));
+
+        gridWorld.getGrid()[3][0] = GridWorld.WALL;
+        gridWorld.getGrid()[3][1] = GridWorld.WALL;
+        gridWorld.getGrid()[3][2] = GridWorld.WALL;
+        gridWorld.getGrid()[3][3] = GridWorld.WALL;
+        gridWorld.getGrid()[3][4] = GridWorld.WALL;
+
+        int[][] grid = gridWorld.getGrid();
+        System.out.print(gridWorld.printGrid());
+
+        gridWorld.actualize(position);
+        List<DirectionalPoint> route = gridWorld.getPossibleRoutes();
+
+
+        int i = 0;
+        for (DirectionalPoint point: route){
+            grid[point.getY()][point.getX()] = i++;
+        }
+
+        System.out.println(route);
+        System.out.println(gridWorld.printGrid(grid, new DirectionalPoint(Direction.FRONT, -1, -1)));
+    }
+
+    @Test
+    public void testBigWall(){
+        MazePoint goal = new MazePoint(5 * ROBOT_LENGTH, 5 * ROBOT_LENGTH);
+        AStarGridWorld gridWorld = new AStarGridWorld(goal);
+
+        PositionInGrid position = new PositionInGrid();
+        position.setCurrentPosition(new DirectionalPoint(Direction.FRONT, 2, 0));
+
+        gridWorld.getGrid()[3][1] = GridWorld.WALL;
+        gridWorld.getGrid()[3][2] = GridWorld.WALL;
+        gridWorld.getGrid()[3][3] = GridWorld.WALL;
+        gridWorld.getGrid()[2][3] = GridWorld.WALL;
+        gridWorld.getGrid()[1][3] = GridWorld.WALL;
+
+        int[][] grid = gridWorld.getGrid();
+        System.out.print(gridWorld.printGrid());
+
+        gridWorld.actualize(position);
+        List<DirectionalPoint> route = gridWorld.getPossibleRoutes();
+
+
+        int i = 0;
+        for (DirectionalPoint point: route){
+            grid[point.getY()][point.getX()] = i++;
+        }
+
+        System.out.println(route);
+        System.out.println(gridWorld.printGrid(grid, new DirectionalPoint(Direction.FRONT, -1, -1)));
     }
 }

@@ -9,14 +9,15 @@ import java.util.*;
 
 public class AStarGridWorld extends GridWorld{
     private Set<MazePoint> visitedArea;
-    private List<AStarGridPoint> route;
+    private List<DirectionalPoint> route;
+    AStarComparator aStarComparator;
     private int step = 0;
 
     public AStarGridWorld(MazePoint goal) {
         super(goal, 1);
 
         visitedArea = new HashSet<MazePoint>();
-        route = new ArrayList<AStarGridPoint>();
+        aStarComparator = new AStarComparator(getGoal());
     }
 
     @Override
@@ -29,19 +30,50 @@ public class AStarGridWorld extends GridWorld{
     }
 
     private void searchForTheWay() {
-        List<AStarGridPoint> actions = new ArrayList<AStarGridPoint>();
-        AStarGridPoint currentPosition = new AStarGridPoint(getRobotLocation(), step++);
-        route.add(currentPosition);
+        ArrayList<List<DirectionalPoint>> possibleRoutes = new ArrayList<List<DirectionalPoint>>();
+        List<DirectionalPoint> actions;
+        DirectionalPoint currentPosition = getRobotLocation();
+        route = Arrays.asList(currentPosition);
+        possibleRoutes.add(route);
 
-        visitedArea.add(currentPosition.getPoint());
+        visitedArea.add(currentPosition);
 
-        while (!checkGoal(currentPosition.getPoint()) && !findActions(currentPosition.getPoint(), actions)){
-            currentPosition = actions.get(actions.size() - 1);
-            actions.remove(currentPosition);
-            visitedArea.add(currentPosition.getPoint());
-            route.add(currentPosition);
-            step++;
+        while (!checkGoal(currentPosition) && !possibleRoutes.isEmpty()){
+            route = getMinimumRoute(possibleRoutes);
+
+
+            currentPosition = route.get(route.size() - 1);
+
+            actions = findActions(currentPosition);
+            visitedArea.addAll(actions);
+
+            possibleRoutes.remove(route);
+            for (DirectionalPoint point: actions){
+                List<DirectionalPoint> newRoute = new ArrayList<DirectionalPoint>(route.size() + 1);
+                newRoute.addAll(route);
+                newRoute.add(point);
+                possibleRoutes.add(newRoute);
+            }
         }
+    }
+
+    private List<DirectionalPoint> findActions(DirectionalPoint position) {
+        List<DirectionalPoint> allActions = initAllPossibleActions(position.getY(), position.getX());
+        List<DirectionalPoint> actions = new ArrayList<DirectionalPoint>();
+        for (DirectionalPoint action: allActions){
+            if (!visitedArea.contains(action)){
+                actions.add(action);
+            }
+        }
+        return actions;
+    }
+
+
+    private List<DirectionalPoint> getMinimumRoute(ArrayList<List<DirectionalPoint>> possibleRoutes) {
+        Object[] routes = possibleRoutes.toArray();
+        Arrays.sort(routes, aStarComparator);
+
+        return (List<DirectionalPoint>) routes[0];
     }
 
     private boolean checkGoal(DirectionalPoint currentPosition) {
@@ -51,37 +83,26 @@ public class AStarGridWorld extends GridWorld{
         return getGrid()[y][x] == GOAL;
     }
 
-    private boolean findActions(DirectionalPoint position, List<AStarGridPoint> actions) {
-        int added = 0;
-        List<DirectionalPoint> directionalPoints = initAllPossibleActions(position.getY(), position.getX());
-        Object[] sortedActions = directionalPoints.toArray();
-        Arrays.sort(sortedActions, new AStarComporator(getGoal()));
-        for (Object pointObject: sortedActions){
-            DirectionalPoint point = (DirectionalPoint) pointObject;
-            if (!visitedArea.contains(point)){
-                actions.add(new AStarGridPoint(point, step));
-                added++;
-            }
-        }
-
-        if (added == 0){
-            AStarGridPoint last = actions.get(actions.size() - 1);
-            route = route.subList(0, last.getStep());
-            step = last.getStep();
-        }
-
-        return actions.isEmpty();
-    }
-
     private Direction getNextStep() {
-        DirectionalPoint nextStep = route.get(0).getPoint();
+        DirectionalPoint nextStep = route.get(0);
         route.remove(0);
         return nextStep.getDirection();
     }
 
+    /**
+     * Checkes if current shortest route is still valid,
+     * which is, there is no new obstacles on thr route.
+     * Otherwise there is need of new route.
+     *
+     * @return true, if there is no new obstacles on the route. Othewise false.
+     */
     private boolean checkRoute(){
-        for (AStarGridPoint point: route){
-            if (getGrid()[point.getPoint().getX()][point.getPoint().getY()] == -2){
+        if (route == null){
+            return false;
+        }
+
+        for (DirectionalPoint point: route){
+            if (getGrid()[point.getX()][point.getY()] == -2){
                 return false;
             }
         }
@@ -89,23 +110,26 @@ public class AStarGridWorld extends GridWorld{
         return !route.isEmpty();
     }
 
-    protected List<AStarGridPoint> getRoute() {
+    protected List<DirectionalPoint> getPossibleRoutes() {
         return route;
     }
 
-    private class AStarComporator implements Comparator {
+    private class AStarComparator implements Comparator {
         private MazePoint goal;
-        public AStarComporator(MazePoint goal) {
+        public AStarComparator(MazePoint goal) {
             this.goal = goal;
         }
 
         @Override
         public int compare(Object o, Object o1) {
-            DirectionalPoint directionalPoint = (DirectionalPoint) o;
-            DirectionalPoint directionalPoint1 = (DirectionalPoint) o1;
+            List<DirectionalPoint> route = (List<DirectionalPoint>) o;
+            List<DirectionalPoint> route1 = (List<DirectionalPoint>) o1;
 
-            int distance = (goal.getX() - directionalPoint.getX()) + (goal.getY() - directionalPoint.getY());
-            int distance1 = (goal.getX() - directionalPoint1.getX()) + (goal.getY() - directionalPoint1.getY());
+            DirectionalPoint directionalPoint = route.get(route.size() - 1);
+            DirectionalPoint directionalPoint1 = route1.get(route1.size() - 1);
+
+            int distance = route.size() + (goal.getX() - directionalPoint.getX()) + (goal.getY() - directionalPoint.getY());
+            int distance1 = route1.size() + (goal.getX() - directionalPoint1.getX()) + (goal.getY() - directionalPoint1.getY());
 
             if (distance1 > distance) return 1;
             if (distance1 < distance) return -1;
