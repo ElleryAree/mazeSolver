@@ -28,7 +28,7 @@ public class GridWorldRunner {
         try{
             runDangerous();
         } catch (Throwable e){
-            LoggerProvider.sendMessage("Ooops: " + e.getMessage());
+            LoggerProvider.sendMessage("Ooops: " + e.toString());
         }
     }
 

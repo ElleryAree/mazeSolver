@@ -1,50 +1,68 @@
 package localization.grid.aStar;
 
+import console.LoggerProvider;
 import localization.grid.GridWorld;
 import localization.maze.Direction;
 import localization.maze.DirectionalPoint;
 import localization.maze.MazePoint;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AStarGridWorld extends GridWorld{
-    private Set<MazePoint> visitedArea;
+    private List<MazePoint> visitedArea;
     private List<DirectionalPoint> route;
-    AStarComparator aStarComparator;
-    private int step = 0;
 
     public AStarGridWorld(MazePoint goal) {
         super(goal, 1);
 
-        visitedArea = new HashSet<MazePoint>();
-        aStarComparator = new AStarComparator(getGoal());
+        visitedArea = new ArrayList<MazePoint>();
     }
 
     @Override
     protected Direction findWay() {
         if (!checkRoute()){
             searchForTheWay();
+            LoggerProvider.sendMessage("Route: " + route);
         }
 
         return getNextStep();
     }
 
     private void searchForTheWay() {
+        int y = getDistanceInCells(getRobotLocation().getY());
+        int x = getDistanceInCells(getRobotLocation().getX());
+
         ArrayList<List<DirectionalPoint>> possibleRoutes = new ArrayList<List<DirectionalPoint>>();
         List<DirectionalPoint> actions;
-        DirectionalPoint currentPosition = getRobotLocation();
-        route = Arrays.asList(currentPosition);
+        DirectionalPoint currentPosition = new DirectionalPoint(Direction.FRONT, x, y);
+        visitedArea.clear();
+        route = new ArrayList<DirectionalPoint>(1);
+        route.add(currentPosition);
         possibleRoutes.add(route);
 
         visitedArea.add(currentPosition);
+        LoggerProvider.sendMessage("Current position: " + currentPosition);
 
-        while (!checkGoal(currentPosition) && !possibleRoutes.isEmpty()){
+        while (!possibleRoutes.isEmpty()){
+//            LoggerProvider.sendMessage("Search step");
+//            LoggerProvider.sendMessage("\tCurrent position: " + currentPosition);
+//            LoggerProvider.sendMessage("\tPossible routes: " + possibleRoutes.size());
+//            LoggerProvider.sendMessage("\tVisitedArea: " + visitedArea.size());
+//            LoggerProvider.sendMessage("\tGoal: " + getGoal());
+//            LoggerProvider.sendMessage(printGrid());
+
             route = getMinimumRoute(possibleRoutes);
 
+            LoggerProvider.sendMessage("\tShortest route: " + route);
 
             currentPosition = route.get(route.size() - 1);
+            if (checkGoal(currentPosition)){
+                return;
+            }
 
             actions = findActions(currentPosition);
+            LoggerProvider.sendMessage("\tActions: " + actions);
             visitedArea.addAll(actions);
 
             possibleRoutes.remove(route);
@@ -55,10 +73,15 @@ public class AStarGridWorld extends GridWorld{
                 possibleRoutes.add(newRoute);
             }
         }
+
+        throw new RuntimeException("No route");
     }
 
     private List<DirectionalPoint> findActions(DirectionalPoint position) {
-        List<DirectionalPoint> allActions = initAllPossibleActions(position.getY(), position.getX());
+        int y = getDistanceInCells(position.getY());
+        int x = getDistanceInCells(position.getX());
+
+        List<DirectionalPoint> allActions = initAllPossibleActions(y, x);
         List<DirectionalPoint> actions = new ArrayList<DirectionalPoint>();
         for (DirectionalPoint action: allActions){
             if (!visitedArea.contains(action)){
@@ -70,17 +93,30 @@ public class AStarGridWorld extends GridWorld{
 
 
     private List<DirectionalPoint> getMinimumRoute(ArrayList<List<DirectionalPoint>> possibleRoutes) {
-        Object[] routes = possibleRoutes.toArray();
-        Arrays.sort(routes, aStarComparator);
+        List<DirectionalPoint> shortestRoute = possibleRoutes.get(0);
+        int shortestLength = getLength(shortestRoute);
 
-        return (List<DirectionalPoint>) routes[0];
+        for (List<DirectionalPoint> route: possibleRoutes){
+            int length = getLength(route);
+
+            if (length < shortestLength){
+                shortestLength = length;
+                shortestRoute = route;
+            }
+        }
+
+        return shortestRoute;
     }
 
     private boolean checkGoal(DirectionalPoint currentPosition) {
         int y = currentPosition.getY();
         int x = currentPosition.getX();
 
-        return getGrid()[y][x] == GOAL;
+        LoggerProvider.sendMessage("Position: " + x + ", " + y);
+        LoggerProvider.sendMessage("Goal: " + getGoal().getX() + ", " + getGoal().getY());
+        LoggerProvider.sendMessage("");
+
+        return x == getGoal().getX() && y == getGoal().getY();
     }
 
     private Direction getNextStep() {
@@ -97,7 +133,7 @@ public class AStarGridWorld extends GridWorld{
      * @return true, if there is no new obstacles on the route. Othewise false.
      */
     private boolean checkRoute(){
-        if (route == null){
+        /*if (route == null){
             return false;
         }
 
@@ -107,34 +143,17 @@ public class AStarGridWorld extends GridWorld{
             }
         }
 
-        return !route.isEmpty();
+        return !route.isEmpty();*/
+        return false;
     }
 
     protected List<DirectionalPoint> getPossibleRoutes() {
         return route;
     }
 
-    private class AStarComparator implements Comparator {
-        private MazePoint goal;
-        public AStarComparator(MazePoint goal) {
-            this.goal = goal;
-        }
-
-        @Override
-        public int compare(Object o, Object o1) {
-            List<DirectionalPoint> route = (List<DirectionalPoint>) o;
-            List<DirectionalPoint> route1 = (List<DirectionalPoint>) o1;
-
-            DirectionalPoint directionalPoint = route.get(route.size() - 1);
-            DirectionalPoint directionalPoint1 = route1.get(route1.size() - 1);
-
-            int distance = route.size() + (goal.getX() - directionalPoint.getX()) + (goal.getY() - directionalPoint.getY());
-            int distance1 = route1.size() + (goal.getX() - directionalPoint1.getX()) + (goal.getY() - directionalPoint1.getY());
-
-            if (distance1 > distance) return 1;
-            if (distance1 < distance) return -1;
-
-            return Math.random() > 0.5 ? 1 : 0;
-        }
+    private int getLength(List<DirectionalPoint> route) {
+        MazePoint goal = getGoal();
+        DirectionalPoint directionalPoint = route.get(route.size() - 1);
+        return route.size() + (goal.getX() - directionalPoint.getX()) + (goal.getY() - directionalPoint.getY());
     }
 }

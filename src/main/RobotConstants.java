@@ -23,5 +23,5 @@ public class RobotConstants {
      * Length of a robot,
      * in same units as wheelDiameter.
      */
-    public static final int ROBOT_LENGTH = 20;
+    public static final int ROBOT_LENGTH = 30;
 }

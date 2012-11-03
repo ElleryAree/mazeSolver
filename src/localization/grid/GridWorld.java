@@ -228,23 +228,4 @@ public abstract class GridWorld {
                 (getGrid()[i][j] != EMPTY && getGrid()[i][j] != WALL))
             actions.add(new DirectionalPoint(direction, j, i));
     }
-
-    /*private class DirectionPointComparator implements Comparator<DirectionalPoint> {
-        private MazePoint goal;
-
-        public DirectionPointComparator(MazePoint goal) {
-            this.goal = goal;
-        }
-
-        @Override
-        public int compare(DirectionalPoint directionalPoint, DirectionalPoint directionalPoint1) {
-            int distance = (goal.getX() - directionalPoint.getX()) + (goal.getY() - directionalPoint.getY());
-            int distance1 = (goal.getX() - directionalPoint1.getX()) + (goal.getY() - directionalPoint1.getY());
-
-            if (distance1 > distance) return 1;
-            if (distance1 <= distance) return -1;
-
-            return 0;
-        }
-    }*/
 }
