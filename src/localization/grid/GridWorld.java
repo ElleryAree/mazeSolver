@@ -135,7 +135,10 @@ public abstract class GridWorld {
     }
 
     public static PositionInGrid rotateMeasurements(PositionInGrid position){
-        return rotateMeasurements(position, position.getCurrentPosition().getDirection());
+        PositionInGrid positionInGrid = rotateMeasurements(position, position.getCurrentPosition().getDirection());
+        positionInGrid.getCurrentPosition().setX(getDistanceInCells(positionInGrid.getCurrentPosition().getX()));
+        positionInGrid.getCurrentPosition().setY(getDistanceInCells(positionInGrid.getCurrentPosition().getY()));
+        return positionInGrid;
     }
 
     public static PositionInGrid rotateMeasurements(PositionInGrid position, Direction direction) {

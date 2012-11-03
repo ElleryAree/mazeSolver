@@ -21,7 +21,6 @@ public class AStarTest {
 
     @Test
     public void testPositivePositive(){
-        LoggerProvider.initiateLogger(true, true);
         MazePoint goal = new MazePoint(5 * ROBOT_LENGTH, 5 * ROBOT_LENGTH);
         AStarGridWorld gridWorld = new AStarGridWorld(goal);
 
@@ -49,7 +48,7 @@ public class AStarTest {
         System.out.println(gridWorld.printGrid(grid, new DirectionalPoint(Direction.FRONT, -1, -1)));
     }
 
-    @Test
+    @Test(expected = RuntimeException.class)
     public void testCompleteWall(){
         MazePoint goal = new MazePoint(5 * ROBOT_LENGTH, 5 * ROBOT_LENGTH);
         AStarGridWorld gridWorld = new AStarGridWorld(goal);

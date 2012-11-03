@@ -7,6 +7,7 @@ import localization.maze.DirectionalPoint;
 import localization.maze.MazePoint;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class AStarGridWorld extends GridWorld{
@@ -41,7 +42,6 @@ public class AStarGridWorld extends GridWorld{
         route.add(currentPosition);
         possibleRoutes.add(route);
 
-        visitedArea.add(currentPosition);
         LoggerProvider.sendMessage("Current position: " + currentPosition);
 
         while (!possibleRoutes.isEmpty()){
@@ -53,6 +53,9 @@ public class AStarGridWorld extends GridWorld{
 //            LoggerProvider.sendMessage(printGrid());
 
             route = getMinimumRoute(possibleRoutes);
+            if (route == null){
+                break;
+            }
 
             LoggerProvider.sendMessage("\tShortest route: " + route);
 
@@ -61,11 +64,11 @@ public class AStarGridWorld extends GridWorld{
                 return;
             }
 
-            actions = findActions(currentPosition);
-            LoggerProvider.sendMessage("\tActions: " + actions);
-            visitedArea.addAll(actions);
+            visitedArea.add(currentPosition);
 
-            possibleRoutes.remove(route);
+            actions = initAllPossibleActions(currentPosition.getY(), currentPosition.getX());
+            LoggerProvider.sendMessage("\tActions: " + actions);
+
             for (DirectionalPoint point: actions){
                 List<DirectionalPoint> newRoute = new ArrayList<DirectionalPoint>(route.size() + 1);
                 newRoute.addAll(route);
@@ -77,34 +80,28 @@ public class AStarGridWorld extends GridWorld{
         throw new RuntimeException("No route");
     }
 
-    private List<DirectionalPoint> findActions(DirectionalPoint position) {
-        int y = getDistanceInCells(position.getY());
-        int x = getDistanceInCells(position.getX());
-
-        List<DirectionalPoint> allActions = initAllPossibleActions(y, x);
-        List<DirectionalPoint> actions = new ArrayList<DirectionalPoint>();
-        for (DirectionalPoint action: allActions){
-            if (!visitedArea.contains(action)){
-                actions.add(action);
-            }
-        }
-        return actions;
-    }
-
-
     private List<DirectionalPoint> getMinimumRoute(ArrayList<List<DirectionalPoint>> possibleRoutes) {
-        List<DirectionalPoint> shortestRoute = possibleRoutes.get(0);
-        int shortestLength = getLength(shortestRoute);
+        List<DirectionalPoint> shortestRoute = null;
+        int shortestLength = -1;
 
-        for (List<DirectionalPoint> route: possibleRoutes){
+        Iterator<List<DirectionalPoint>> possibleRoutesIterator = possibleRoutes.iterator();
+        while (possibleRoutesIterator.hasNext()){
+            List<DirectionalPoint> route = possibleRoutesIterator.next();
+
+            if (route.size() == 0 || visitedArea.contains(route.get(route.size() - 1))){
+                possibleRoutesIterator.remove();
+                continue;
+            }
+
             int length = getLength(route);
 
-            if (length < shortestLength){
+            if (shortestLength == -1 || length < shortestLength){
                 shortestLength = length;
                 shortestRoute = route;
             }
         }
 
+        possibleRoutes.remove(shortestRoute);
         return shortestRoute;
     }
 
@@ -133,18 +130,17 @@ public class AStarGridWorld extends GridWorld{
      * @return true, if there is no new obstacles on the route. Othewise false.
      */
     private boolean checkRoute(){
-        /*if (route == null){
+        if (route == null){
             return false;
         }
 
         for (DirectionalPoint point: route){
-            if (getGrid()[point.getX()][point.getY()] == -2){
+            if (getGrid()[point.getY()][point.getX()] == -2){
                 return false;
             }
         }
 
-        return !route.isEmpty();*/
-        return false;
+        return !route.isEmpty();
     }
 
     protected List<DirectionalPoint> getPossibleRoutes() {
