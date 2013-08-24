@@ -25,17 +25,11 @@ public class GridWorldRunner {
         history = new ArrayList<Direction>();
     }
     public void run(){
-        try{
-            runDangerous();
-        } catch (Throwable e){
-            LoggerProvider.sendMessage("Ooops: " + e.toString());
-        }
-    }
-
-    public void runDangerous(){
         PositionInGrid position = new PositionInGrid();
         position.setCurrentPosition(new DirectionalPoint(Direction.FRONT, 0, 0));
         movement.getSense(position);
+
+        printGrid();
 
         Direction direction = gridWorld.actualize(position);
 
@@ -73,8 +67,8 @@ public class GridWorldRunner {
     }
 
     private boolean isGoal(PositionInGrid position) {
-        int y = GridWorld.getDistanceInCells(position.getCurrentPosition().getY());
-        int x = GridWorld.getDistanceInCells(position.getCurrentPosition().getX());
+        int y = position.getCurrentPosition().getY();
+        int x = position.getCurrentPosition().getX();
         return gridWorld.getGrid()[y][x] == GridWorld.GOAL;
     }
 

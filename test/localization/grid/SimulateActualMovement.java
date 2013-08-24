@@ -2,7 +2,6 @@ package localization.grid;
 
 import console.LoggerProvider;
 import localization.grid.aStar.AStarGridWorld;
-import main.RobotConstants;
 import localization.maze.Direction;
 import localization.maze.DirectionalPoint;
 import localization.maze.MazePoint;
@@ -12,8 +11,9 @@ import org.junit.Test;
 public class SimulateActualMovement {
     @Test
     public void testUnreachableSpace(){
-        LoggerProvider.initiateLogger(true, true);
-        MazePoint goal = new MazePoint(1 * RobotConstants.ROBOT_LENGTH, 4 * RobotConstants.ROBOT_LENGTH);
+        LoggerProvider.initProvider(true);
+        LoggerProvider.getProvider().callback(true);
+        MazePoint goal = new MazePoint(1, 4);
         DynamicGridWorld gridWorld = new DynamicGridWorld(goal);
 
         gridWorld.updateGrid();
@@ -34,8 +34,9 @@ public class SimulateActualMovement {
 
     @Test
     public void testAStarSpace(){
-        LoggerProvider.initiateLogger(true, false);
-        MazePoint goal = new MazePoint(1 * RobotConstants.ROBOT_LENGTH, 4 * RobotConstants.ROBOT_LENGTH);
+        LoggerProvider.initProvider(true);
+        LoggerProvider.getProvider().callback(false);
+        MazePoint goal = new MazePoint(1, 4);
         GridWorld gridWorld = new AStarGridWorld(goal);
 
         System.out.print(gridWorld.printGrid());
@@ -43,20 +44,17 @@ public class SimulateActualMovement {
         DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, 0, 0);
         PositionInGrid positionInGrid = new PositionInGrid();
         positionInGrid.setCurrentPosition(mazePoint);
-        positionInGrid.setLeftMeasure(145);
-        positionInGrid.setRightMeasure(44);
-        positionInGrid.setFrontMeasure(38);
+        positionInGrid.setLeftMeasure(3);
+        positionInGrid.setRightMeasure(1);
+        positionInGrid.setFrontMeasure(1);
         Direction direction = gridWorld.actualize(positionInGrid);
 
         System.out.println(direction);
 
-        gridWorld.printGrid();
+        System.out.println(gridWorld.printGrid());
         FakeRunner runner = new FakeRunner(gridWorld.getGrid());
 
         positionInGrid = runner.move(direction, positionInGrid);
-        positionInGrid.setLeftMeasure(10);
-        positionInGrid.setRightMeasure(10);
-        positionInGrid.setFrontMeasure(100);
 
         direction = gridWorld.actualize(positionInGrid);
 

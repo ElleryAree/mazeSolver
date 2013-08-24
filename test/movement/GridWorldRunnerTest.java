@@ -1,6 +1,5 @@
 package movement;
 
-import main.RobotConstants;
 import localization.maze.MazePoint;
 import org.junit.Test;
 
@@ -17,7 +16,7 @@ public class GridWorldRunnerTest {
         expectedGrid[1] = new int[]{-2, -2, -2, -2, -2};
         expectedGrid[0] = new int[]{-2, -2, -2, -2, -2};
 
-        MazePoint goal = new MazePoint(5 * RobotConstants.ROBOT_LENGTH, 5 * RobotConstants.ROBOT_LENGTH);
+        MazePoint goal = new MazePoint(5, 5);
 
         MockGridMovement mockGridMovement = new MockGridMovement(expectedGrid);
         GridWorldRunner runner = new GridWorldRunner(goal, mockGridMovement);
@@ -33,7 +32,7 @@ public class GridWorldRunnerTest {
         expectedGrid[1] = new int[]{-2, -2, -2, -1, -2};
         expectedGrid[0] = new int[]{-2, -2, -2, -1, -2};
 
-        MazePoint goal = new MazePoint(5 * RobotConstants.ROBOT_LENGTH, 5 * RobotConstants.ROBOT_LENGTH);
+        MazePoint goal = new MazePoint(5, 5);
 
         MockGridMovement mockGridMovement = new MockGridMovement(expectedGrid);
         GridWorldRunner runner = new GridWorldRunner(goal, mockGridMovement);
@@ -49,7 +48,7 @@ public class GridWorldRunnerTest {
         expectedGrid[1] = new int[]{-2, -2, -2, -2, -2};
         expectedGrid[0] = new int[]{-2, -2, -2, -2, -2};
 
-        MazePoint goal = new MazePoint(5 * RobotConstants.ROBOT_LENGTH, 5 * RobotConstants.ROBOT_LENGTH);
+        MazePoint goal = new MazePoint(5, 5);
 
         MockGridMovement mockGridMovement = new MockGridMovement(expectedGrid);
         GridWorldRunner runner = new GridWorldRunner(goal, mockGridMovement);
@@ -65,7 +64,7 @@ public class GridWorldRunnerTest {
         expectedGrid[1] = new int[]{-2, -2, -2, -2, -2};
         expectedGrid[0] = new int[]{-2, -2, -2, -2, -2};
 
-        MazePoint goal = new MazePoint(0 * RobotConstants.ROBOT_LENGTH, 2 * RobotConstants.ROBOT_LENGTH);
+        MazePoint goal = new MazePoint(0, 2);
 
         MockGridMovement mockGridMovement = new MockGridMovement(expectedGrid);
         GridWorldRunner runner = new GridWorldRunner(goal, mockGridMovement);

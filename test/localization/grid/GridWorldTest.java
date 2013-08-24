@@ -9,15 +9,13 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
-import static main.RobotConstants.ROBOT_LENGTH;
-
 /**
  * Date: 8/17/12
  */
 public class GridWorldTest {
     @Test
     public void testPositivePositive(){
-        MazePoint goal = new MazePoint(5 * ROBOT_LENGTH, 5 * ROBOT_LENGTH);
+        MazePoint goal = new MazePoint(5, 5);
         GridWorld gridWorld = new DynamicGridWorld(goal);
 
         int[][] grid = checkWorldDimentions(gridWorld, 5, 5);
@@ -28,7 +26,7 @@ public class GridWorldTest {
 
     @Test
     public void testPositiveNegative(){
-        MazePoint goal = new MazePoint(5 * ROBOT_LENGTH, -5 * ROBOT_LENGTH);
+        MazePoint goal = new MazePoint(5, -5);
         GridWorld gridWorld = new DynamicGridWorld(goal);
 
         int[][] grid = checkWorldDimentions(gridWorld, 5, 5);
@@ -40,7 +38,7 @@ public class GridWorldTest {
 
     @Test
     public void testNegativePositive(){
-        MazePoint goal = new MazePoint(-5 * ROBOT_LENGTH, 5 * ROBOT_LENGTH);
+        MazePoint goal = new MazePoint(-5, 5);
         GridWorld gridWorld = new DynamicGridWorld(goal);
 
         int[][] grid = checkWorldDimentions(gridWorld, 5, 5);
@@ -51,7 +49,7 @@ public class GridWorldTest {
 
     @Test
     public void testNegativeNegative(){
-        MazePoint goal = new MazePoint(-5 * ROBOT_LENGTH, -5 * ROBOT_LENGTH);
+        MazePoint goal = new MazePoint(-5, -5);
         GridWorld gridWorld = new DynamicGridWorld(goal);
 
         int[][] grid = checkWorldDimentions(gridWorld, 5, 5);
@@ -62,7 +60,7 @@ public class GridWorldTest {
 
     @Test
     public void testLong(){
-        MazePoint goal = new MazePoint(8 * ROBOT_LENGTH, 2 * ROBOT_LENGTH);
+        MazePoint goal = new MazePoint(8, 2);
         GridWorld gridWorld = new DynamicGridWorld(goal);
 
         checkWorldDimentions(gridWorld, 2, 8);
@@ -70,18 +68,10 @@ public class GridWorldTest {
 
     @Test
     public void testWide(){
-        MazePoint goal = new MazePoint(2 * ROBOT_LENGTH, 8 * ROBOT_LENGTH);
+        MazePoint goal = new MazePoint(2, 8);
         GridWorld gridWorld = new DynamicGridWorld(goal);
 
         checkWorldDimentions(gridWorld, 8, 2);
-    }
-
-    @Test
-    public void testNotRound(){
-        MazePoint goal = new MazePoint(7.6 * ROBOT_LENGTH, 1.7 * ROBOT_LENGTH);
-        GridWorld gridWorld = new DynamicGridWorld(goal);
-
-        checkWorldDimentions(gridWorld, 2, 8);
     }
 
     //-----------------------------------------------------------------------------------------------------------------
@@ -90,15 +80,15 @@ public class GridWorldTest {
 
     @Test
     public void testIncreaseInside(){
-        GridWorld world = new DynamicGridWorld(new MazePoint(5 * ROBOT_LENGTH, 5 * ROBOT_LENGTH));
+        GridWorld world = new DynamicGridWorld(new MazePoint(5, 5));
 
-        DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, 3 * ROBOT_LENGTH, 3 * ROBOT_LENGTH);
+        DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, 3, 3);
         PositionInGrid positionInGrid = new PositionInGrid();
         positionInGrid.setCurrentPosition(mazePoint);
-        positionInGrid.setLeftMeasure(ROBOT_LENGTH);
-        positionInGrid.setRightMeasure(ROBOT_LENGTH);
-        positionInGrid.setFrontMeasure(ROBOT_LENGTH);
-        positionInGrid.setRearMeasure(ROBOT_LENGTH);
+        positionInGrid.setLeftMeasure(1);
+        positionInGrid.setRightMeasure(1);
+        positionInGrid.setFrontMeasure(1);
+        positionInGrid.setRearMeasure(1);
 
         world.increaseGridAndUpdateWalls(positionInGrid);
 
@@ -108,15 +98,15 @@ public class GridWorldTest {
 
     @Test
     public void testIncreaseOnLeftSide(){
-        GridWorld world = new DynamicGridWorld(new MazePoint(5 * ROBOT_LENGTH, 5 * ROBOT_LENGTH));
+        GridWorld world = new DynamicGridWorld(new MazePoint(5, 5));
 
-        DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, 2 * ROBOT_LENGTH, 4 * ROBOT_LENGTH);
+        DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, 2, 4);
         PositionInGrid positionInGrid = new PositionInGrid();
         positionInGrid.setCurrentPosition(mazePoint);
-        positionInGrid.setLeftMeasure(2 * ROBOT_LENGTH);
-        positionInGrid.setRightMeasure(ROBOT_LENGTH);
-        positionInGrid.setFrontMeasure(ROBOT_LENGTH);
-        positionInGrid.setRearMeasure(ROBOT_LENGTH);
+        positionInGrid.setLeftMeasure(2);
+        positionInGrid.setRightMeasure(1);
+        positionInGrid.setFrontMeasure(1);
+        positionInGrid.setRearMeasure(1);
 
         world.increaseGridAndUpdateWalls(positionInGrid);
 
@@ -126,15 +116,15 @@ public class GridWorldTest {
 
     @Test
     public void testIncreaseOnFrontSide(){
-        GridWorld world = new DynamicGridWorld(new MazePoint(5 * ROBOT_LENGTH, 5 * ROBOT_LENGTH));
+        GridWorld world = new DynamicGridWorld(new MazePoint(5, 5));
 
-        DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, 3 * ROBOT_LENGTH, 3 * ROBOT_LENGTH);
+        DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, 3, 3);
         PositionInGrid positionInGrid = new PositionInGrid();
         positionInGrid.setCurrentPosition(mazePoint);
-        positionInGrid.setLeftMeasure(ROBOT_LENGTH);
-        positionInGrid.setRightMeasure(ROBOT_LENGTH);
-        positionInGrid.setFrontMeasure(2 * ROBOT_LENGTH);
-        positionInGrid.setRearMeasure(ROBOT_LENGTH);
+        positionInGrid.setLeftMeasure(1);
+        positionInGrid.setRightMeasure(1);
+        positionInGrid.setFrontMeasure(2);
+        positionInGrid.setRearMeasure(1);
 
         world.increaseGridAndUpdateWalls(positionInGrid);
 
@@ -144,16 +134,16 @@ public class GridWorldTest {
 
     @Test
     public void testIncreaseLeft(){
-        GridWorld world = new DynamicGridWorld(new MazePoint(5 * ROBOT_LENGTH, 5 * ROBOT_LENGTH));
+        GridWorld world = new DynamicGridWorld(new MazePoint(5, 5));
         printGrid(world.getGrid(), world.getRobotLocation());
 
-        DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, ROBOT_LENGTH, 4 * ROBOT_LENGTH);
+        DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, 1, 4);
         PositionInGrid positionInGrid = new PositionInGrid();
         positionInGrid.setCurrentPosition(mazePoint);
-        positionInGrid.setLeftMeasure(4 * ROBOT_LENGTH);
-        positionInGrid.setRightMeasure(ROBOT_LENGTH);
-        positionInGrid.setFrontMeasure(ROBOT_LENGTH);
-        positionInGrid.setRearMeasure(ROBOT_LENGTH);
+        positionInGrid.setLeftMeasure(4);
+        positionInGrid.setRightMeasure(1);
+        positionInGrid.setFrontMeasure(1);
+        positionInGrid.setRearMeasure(1);
 
         world.increaseGridAndUpdateWalls(positionInGrid);
 
@@ -169,15 +159,15 @@ public class GridWorldTest {
 
     @Test
     public void testIncreaseRight(){
-        GridWorld world = new DynamicGridWorld(new MazePoint(5 * ROBOT_LENGTH, 5 * ROBOT_LENGTH));
+        GridWorld world = new DynamicGridWorld(new MazePoint(5, 5));
 
-        DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, ROBOT_LENGTH, ROBOT_LENGTH);
+        DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, 1, 1);
         PositionInGrid positionInGrid = new PositionInGrid();
         positionInGrid.setCurrentPosition(mazePoint);
-        positionInGrid.setLeftMeasure(ROBOT_LENGTH);
-        positionInGrid.setRightMeasure(7 * ROBOT_LENGTH);
-        positionInGrid.setFrontMeasure(ROBOT_LENGTH);
-        positionInGrid.setRearMeasure(ROBOT_LENGTH);
+        positionInGrid.setLeftMeasure(1);
+        positionInGrid.setRightMeasure(7);
+        positionInGrid.setFrontMeasure(1);
+        positionInGrid.setRearMeasure(1);
 
         world.increaseGridAndUpdateWalls(positionInGrid);
 
@@ -187,15 +177,15 @@ public class GridWorldTest {
 
     @Test
     public void testIncreaseTop(){
-        GridWorld world = new DynamicGridWorld(new MazePoint(5 * ROBOT_LENGTH, 5 * ROBOT_LENGTH));
+        GridWorld world = new DynamicGridWorld(new MazePoint(5, 5));
 
-        DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, 3 * ROBOT_LENGTH, 3 * ROBOT_LENGTH);
+        DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, 3, 3);
         PositionInGrid positionInGrid = new PositionInGrid();
         positionInGrid.setCurrentPosition(mazePoint);
-        positionInGrid.setLeftMeasure(ROBOT_LENGTH);
-        positionInGrid.setRightMeasure(ROBOT_LENGTH);
-        positionInGrid.setFrontMeasure(5 * ROBOT_LENGTH);
-        positionInGrid.setRearMeasure(ROBOT_LENGTH);
+        positionInGrid.setLeftMeasure(1);
+        positionInGrid.setRightMeasure(1);
+        positionInGrid.setFrontMeasure(5);
+        positionInGrid.setRearMeasure(1);
 
         world.increaseGridAndUpdateWalls(positionInGrid);
 
@@ -205,14 +195,14 @@ public class GridWorldTest {
 
     @Test
     public void testIncreaseBottom(){
-        GridWorld world = new DynamicGridWorld(new MazePoint(5 * ROBOT_LENGTH, 5 * ROBOT_LENGTH));
-        DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, 3 * ROBOT_LENGTH, 3 * ROBOT_LENGTH);
+        GridWorld world = new DynamicGridWorld(new MazePoint(5, 5));
+        DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, 3, 3);
         PositionInGrid positionInGrid = new PositionInGrid();
         positionInGrid.setCurrentPosition(mazePoint);
-        positionInGrid.setLeftMeasure(ROBOT_LENGTH);
-        positionInGrid.setRightMeasure(ROBOT_LENGTH);
-        positionInGrid.setFrontMeasure(ROBOT_LENGTH);
-        positionInGrid.setRearMeasure(5 * ROBOT_LENGTH);
+        positionInGrid.setLeftMeasure(1);
+        positionInGrid.setRightMeasure(1);
+        positionInGrid.setFrontMeasure(1);
+        positionInGrid.setRearMeasure(5);
 
         world.increaseGridAndUpdateWalls(positionInGrid);
 
@@ -222,15 +212,15 @@ public class GridWorldTest {
 
     @Test
     public void testIncreaseBottomAndLeft(){
-        GridWorld world = new DynamicGridWorld(new MazePoint(5 * ROBOT_LENGTH, 5 * ROBOT_LENGTH));
+        GridWorld world = new DynamicGridWorld(new MazePoint(5, 5));
 
-        DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, 3 * ROBOT_LENGTH, 3 * ROBOT_LENGTH);
+        DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, 3, 3);
         PositionInGrid positionInGrid = new PositionInGrid();
         positionInGrid.setCurrentPosition(mazePoint);
-        positionInGrid.setLeftMeasure(5 * ROBOT_LENGTH);
-        positionInGrid.setRightMeasure(5 * ROBOT_LENGTH);
-        positionInGrid.setFrontMeasure(5 * ROBOT_LENGTH);
-        positionInGrid.setRearMeasure(5 * ROBOT_LENGTH);
+        positionInGrid.setLeftMeasure(5);
+        positionInGrid.setRightMeasure(5);
+        positionInGrid.setFrontMeasure(5);
+        positionInGrid.setRearMeasure(5);
 
         world.increaseGridAndUpdateWalls(positionInGrid);
 
@@ -240,9 +230,9 @@ public class GridWorldTest {
 
     @Test
     public void testNoIncrease(){
-        GridWorld world = new DynamicGridWorld(new MazePoint(5 * ROBOT_LENGTH, 5 * ROBOT_LENGTH));
+        GridWorld world = new DynamicGridWorld(new MazePoint(5, 5));
 
-        DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, 3 * ROBOT_LENGTH, 3 * ROBOT_LENGTH);
+        DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, 3, 3);
         PositionInGrid positionInGrid = new PositionInGrid();
         positionInGrid.setCurrentPosition(mazePoint);
 
@@ -280,7 +270,7 @@ public class GridWorldTest {
 
     @Test
      public void testActualize(){
-        MazePoint goal = new MazePoint(5 * ROBOT_LENGTH, -5 * ROBOT_LENGTH);
+        MazePoint goal = new MazePoint(5, -5);
         DynamicGridWorld gridWorld = new DynamicGridWorld(goal);
 
         int[][] grid = checkWorldDimentions(gridWorld, 5, 5);
@@ -292,10 +282,10 @@ public class GridWorldTest {
 
         printGrid(grid, gridWorld.getRobotLocation());
 
-        DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, 3 * ROBOT_LENGTH, 3 * ROBOT_LENGTH);
+        DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, 3, 3);
         PositionInGrid positionInGrid = new PositionInGrid();
         positionInGrid.setCurrentPosition(mazePoint);
-        positionInGrid.setLeftMeasure(ROBOT_LENGTH);
+        positionInGrid.setLeftMeasure(1);
 
         actualizeAndPrint(gridWorld, positionInGrid);
 
@@ -311,7 +301,7 @@ public class GridWorldTest {
 
     @Test
     public void testCosts(){
-        MazePoint goal = new MazePoint(5 * ROBOT_LENGTH, -5 * ROBOT_LENGTH);
+        MazePoint goal = new MazePoint(5, -5);
         DynamicGridWorld gridWorld = new DynamicGridWorld(goal);
 
         gridWorld.updateGrid();
@@ -331,25 +321,25 @@ public class GridWorldTest {
 
     @Test
     public void testGreatWallCosts(){
-        MazePoint goal = new MazePoint(5 * ROBOT_LENGTH, -5 * ROBOT_LENGTH);
+        MazePoint goal = new MazePoint(5, -5);
         DynamicGridWorld gridWorld = new DynamicGridWorld(goal);
 
         gridWorld.updateGrid();
         checkWorldDimentions(gridWorld, 5, 5);
 
         for (int i = 1; i <= 4; i++){
-            DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, i * ROBOT_LENGTH, 0);
+            DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, i, 0);
             PositionInGrid positionInGrid = new PositionInGrid();
             positionInGrid.setCurrentPosition(mazePoint);
-            positionInGrid.setFrontMeasure(ROBOT_LENGTH);
+            positionInGrid.setFrontMeasure(1);
             gridWorld.actualize(positionInGrid);
         }
 
         for (int i = 0; i < 4; i++){
-            DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, i * ROBOT_LENGTH, 2 * ROBOT_LENGTH);
+            DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, i, 2);
             PositionInGrid positionInGrid = new PositionInGrid();
             positionInGrid.setCurrentPosition(mazePoint);
-            positionInGrid.setFrontMeasure(ROBOT_LENGTH);
+            positionInGrid.setFrontMeasure(1);
             gridWorld.actualize(positionInGrid);
         }
 
@@ -372,25 +362,25 @@ public class GridWorldTest {
 
     @Test
     public void testUnreachableSpace(){
-        MazePoint goal = new MazePoint(5 * ROBOT_LENGTH, -5 * ROBOT_LENGTH);
+        MazePoint goal = new MazePoint(5, -5);
         DynamicGridWorld gridWorld = new DynamicGridWorld(goal);
 
         gridWorld.updateGrid();
         checkWorldDimentions(gridWorld, 5, 5);
 
         for (int i = 0; i < 3; i++){
-            DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, i * ROBOT_LENGTH, ROBOT_LENGTH);
+            DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, i, 1);
             PositionInGrid positionInGrid = new PositionInGrid();
             positionInGrid.setCurrentPosition(mazePoint);
-            positionInGrid.setFrontMeasure(ROBOT_LENGTH);
+            positionInGrid.setFrontMeasure(1);
             gridWorld.actualize(positionInGrid);
         }
 
         for (int i = 0; i < 2; i++){
-            DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, 3 * ROBOT_LENGTH, (i) * ROBOT_LENGTH);
+            DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, 3, (i));
             PositionInGrid positionInGrid = new PositionInGrid();
             positionInGrid.setCurrentPosition(mazePoint);
-            positionInGrid.setLeftMeasure(ROBOT_LENGTH);
+            positionInGrid.setLeftMeasure(1);
             gridWorld.actualize(positionInGrid);
         }
 
@@ -413,7 +403,7 @@ public class GridWorldTest {
 
     @Test
     public void testWay(){
-        MazePoint goal = new MazePoint(5 * ROBOT_LENGTH, 5 * ROBOT_LENGTH);
+        MazePoint goal = new MazePoint(5, 5);
         DynamicGridWorld gridWorld = new DynamicGridWorld(goal);
 
         gridWorld.updateGrid();
@@ -425,25 +415,25 @@ public class GridWorldTest {
 
     @Test
     public void testSnakyWay(){
-        MazePoint goal = new MazePoint(5 * ROBOT_LENGTH, 5 * ROBOT_LENGTH);
+        MazePoint goal = new MazePoint(5, 5);
         DynamicGridWorld gridWorld = new DynamicGridWorld(goal);
 
         gridWorld.updateGrid();
         checkWorldDimentions(gridWorld, 5, 5);
 
         for (int i = 0; i < 4; i++){
-            DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, i * ROBOT_LENGTH, 0);
+            DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, i, 0);
             PositionInGrid positionInGrid = new PositionInGrid();
             positionInGrid.setCurrentPosition(mazePoint);
-            positionInGrid.setFrontMeasure(ROBOT_LENGTH);
+            positionInGrid.setFrontMeasure(1);
             gridWorld.actualize(positionInGrid);
         }
 
         for (int i = 1; i <= 4; i++){
-            DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, i * ROBOT_LENGTH, 2 * ROBOT_LENGTH);
+            DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, i, 2);
             PositionInGrid positionInGrid = new PositionInGrid();
             positionInGrid.setCurrentPosition(mazePoint);
-            positionInGrid.setFrontMeasure(ROBOT_LENGTH);
+            positionInGrid.setFrontMeasure(1);
             gridWorld.actualize(positionInGrid);
         }
 
@@ -460,19 +450,20 @@ public class GridWorldTest {
 
     @Test
     public void testNoWay(){
-        LoggerProvider.initiateLogger(true, true);
+        LoggerProvider.initProvider(true);
+        LoggerProvider.getProvider().callback(true);
 
-        MazePoint goal = new MazePoint(5 * ROBOT_LENGTH, 5 * ROBOT_LENGTH);
+        MazePoint goal = new MazePoint(5, 5);
         DynamicGridWorld gridWorld = new DynamicGridWorld(goal);
 
         gridWorld.updateGrid();
         checkWorldDimentions(gridWorld, 5, 5);
 
         for (int i = 0; i < 5; i++){
-            DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, i * ROBOT_LENGTH, 0);
+            DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, i, 0);
             PositionInGrid positionInGrid = new PositionInGrid();
             positionInGrid.setCurrentPosition(mazePoint);
-            positionInGrid.setFrontMeasure(ROBOT_LENGTH);
+            positionInGrid.setFrontMeasure(1);
             gridWorld.actualize(positionInGrid);
         }
 

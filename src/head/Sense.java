@@ -62,14 +62,12 @@ public class Sense implements SensorReadings{
     }
 
     public static int getMinimumDistance(int[] distances){
-        int min = 256; //in terms of Ultrasonic sensor, 255 is infinity
+        int sum = 0;
 
         for (int distance: distances){
-            if (distance < min && distance > 0){
-                min = distance;
-            }
+            sum += distance;
         }
 
-        return min;
+        return sum/distances.length;
     }
 }

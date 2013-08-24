@@ -25,8 +25,8 @@ public class DynamicGridWorld extends GridWorld {
     }
 
     private void getWay(DirectionalPoint point, ArrayList<Direction> directions){
-        int y = getDistanceInCells(point.getY());
-        int x = getDistanceInCells(point.getX());
+        int y = point.getY();
+        int x = point.getX();
         if (getGrid()[y][x] == GOAL){
             return;
         }

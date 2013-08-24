@@ -3,7 +3,6 @@ package movement;
 
 import localization.grid.GridWorld;
 import localization.grid.PositionInGrid;
-import main.RobotConstants;
 import localization.maze.Direction;
 
 public class FakeRunner extends MovementInMaze {
@@ -26,24 +25,24 @@ public class FakeRunner extends MovementInMaze {
 
     @Override
     public void getSense(PositionInGrid position) {
-        int x = GridWorld.getDistanceInCells(position.getCurrentPosition().getX());
-        int y = GridWorld.getDistanceInCells(position.getCurrentPosition().getY());
+        int x = position.getCurrentPosition().getX();
+        int y = position.getCurrentPosition().getY();
 
         for (int i=x; i>=0; i--){
             if (grid[y][i] == GridWorld.WALL){
-                position.setLeftMeasure((int) (i * RobotConstants.ROBOT_LENGTH));
+                position.setLeftMeasure(i);
                 break;
             }
         }
         for (int i=x; i<grid[y].length; i++){
             if (grid[y][i] == GridWorld.WALL){
-                position.setRightMeasure((int) (i * RobotConstants.ROBOT_LENGTH));
+                position.setRightMeasure(i);
                 break;
             }
         }
         for (int i=y; i < grid.length; i++){
             if (grid[i][x] == GridWorld.WALL){
-                position.setFrontMeasure((int) (i * RobotConstants.ROBOT_LENGTH));
+                position.setFrontMeasure(i);
                 break;
             }
         }

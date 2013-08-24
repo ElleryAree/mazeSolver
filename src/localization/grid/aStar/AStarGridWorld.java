@@ -1,6 +1,7 @@
 package localization.grid.aStar;
 
 import console.LoggerProvider;
+import dataTransmitter.GridDataTransmitter;
 import localization.grid.GridWorld;
 import localization.maze.Direction;
 import localization.maze.DirectionalPoint;
@@ -30,9 +31,16 @@ public class AStarGridWorld extends GridWorld{
         return getNextStep();
     }
 
+    @Override
+    protected List<DirectionalPoint> getRoute() {
+        if (route == null) return super.getRoute();
+
+        return route;
+    }
+
     private void searchForTheWay() {
-        int y = getDistanceInCells(getRobotLocation().getY());
-        int x = getDistanceInCells(getRobotLocation().getX());
+        int y = getRobotLocation().getY();
+        int x = getRobotLocation().getX();
 
         ArrayList<List<DirectionalPoint>> possibleRoutes = new ArrayList<List<DirectionalPoint>>();
         List<DirectionalPoint> actions;
@@ -42,23 +50,11 @@ public class AStarGridWorld extends GridWorld{
         route.add(currentPosition);
         possibleRoutes.add(route);
 
-        LoggerProvider.sendMessage("Current position: " + currentPosition);
-
         while (!possibleRoutes.isEmpty()){
-//            LoggerProvider.sendMessage("Search step");
-//            LoggerProvider.sendMessage("\tCurrent position: " + currentPosition);
-//            LoggerProvider.sendMessage("\tPossible routes: " + possibleRoutes.size());
-//            LoggerProvider.sendMessage("\tVisitedArea: " + visitedArea.size());
-//            LoggerProvider.sendMessage("\tGoal: " + getGoal());
-//            LoggerProvider.sendMessage(printGrid());
-
             route = getMinimumRoute(possibleRoutes);
             if (route == null){
                 break;
             }
-
-            LoggerProvider.sendMessage("\tShortest route: " + route);
-
             currentPosition = route.get(route.size() - 1);
             if (checkGoal(currentPosition)){
                 return;
@@ -67,7 +63,6 @@ public class AStarGridWorld extends GridWorld{
             visitedArea.add(currentPosition);
 
             actions = initAllPossibleActions(currentPosition.getY(), currentPosition.getX());
-            LoggerProvider.sendMessage("\tActions: " + actions);
 
             for (DirectionalPoint point: actions){
                 List<DirectionalPoint> newRoute = new ArrayList<DirectionalPoint>(route.size() + 1);
@@ -77,6 +72,7 @@ public class AStarGridWorld extends GridWorld{
             }
         }
 
+        GridDataTransmitter.convertAndSendData("0\nF\nFailed: No route!");
         throw new RuntimeException("No route");
     }
 
@@ -108,10 +104,6 @@ public class AStarGridWorld extends GridWorld{
     private boolean checkGoal(DirectionalPoint currentPosition) {
         int y = currentPosition.getY();
         int x = currentPosition.getX();
-
-        LoggerProvider.sendMessage("Position: " + x + ", " + y);
-        LoggerProvider.sendMessage("Goal: " + getGoal().getX() + ", " + getGoal().getY());
-        LoggerProvider.sendMessage("");
 
         return x == getGoal().getX() && y == getGoal().getY();
     }

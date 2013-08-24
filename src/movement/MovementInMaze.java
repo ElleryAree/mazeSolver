@@ -1,11 +1,12 @@
 package movement;
 
-import localization.grid.PositionInGrid;
 import head.Sense;
 import head.SensorReadings;
-import main.RobotConstants;
+import localization.grid.GridWorld;
+import localization.grid.PositionInGrid;
 import localization.maze.Direction;
 import localization.maze.DirectionalPoint;
+import main.RobotConstants;
 
 /**
  * Class for movements in the localization.maze:
@@ -30,9 +31,9 @@ public class MovementInMaze extends BasicMovement implements RunnerWithSenses {
     public void getSense(PositionInGrid position) {
         sense.senseIteration();
 
-        position.setFrontMeasure(sense.getFront());
-        position.setLeftMeasure(sense.getLeft());
-        position.setRightMeasure(sense.getRight());
+        position.setFrontMeasure(GridWorld.getDistanceInCells(sense.getFront()));
+        position.setLeftMeasure(GridWorld.getDistanceInCells(sense.getLeft()));
+        position.setRightMeasure(GridWorld.getDistanceInCells(sense.getRight()));
     }
 
     @Override
@@ -88,19 +89,19 @@ public class MovementInMaze extends BasicMovement implements RunnerWithSenses {
 
         switch (newPosition.getDirection()) {
             case LEFT: {
-                newPosition.setX(newPosition.getX() - RobotConstants.ROBOT_LENGTH);
+                newPosition.setX(newPosition.getX() - 1);
                 break;
             }
             case RIGHT: {
-                newPosition.setX(newPosition.getX() + RobotConstants.ROBOT_LENGTH);
+                newPosition.setX(newPosition.getX() + 1);
                 break;
             }
             case BACK: {
-                newPosition.setY(newPosition.getY() - RobotConstants.ROBOT_LENGTH);
+                newPosition.setY(newPosition.getY() - 1);
                 break;
             }
             case FRONT:{
-                newPosition.setY(newPosition.getY() + RobotConstants.ROBOT_LENGTH);
+                newPosition.setY(newPosition.getY() + 1);
             }
         }
         turn(direction.getDegrees());

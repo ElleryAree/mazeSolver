@@ -11,17 +11,16 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static main.RobotConstants.ROBOT_LENGTH;
-
 public class AStarTest {
     @Before
     public void setUp(){
-        LoggerProvider.initiateLogger(true, true);
+        LoggerProvider.initProvider(true);
+        LoggerProvider.getProvider().callback(true);
     }
 
     @Test
     public void testPositivePositive(){
-        MazePoint goal = new MazePoint(5 * ROBOT_LENGTH, 5 * ROBOT_LENGTH);
+        MazePoint goal = new MazePoint(5, 5);
         AStarGridWorld gridWorld = new AStarGridWorld(goal);
 
         PositionInGrid position = new PositionInGrid();
@@ -50,7 +49,7 @@ public class AStarTest {
 
     @Test(expected = RuntimeException.class)
     public void testCompleteWall(){
-        MazePoint goal = new MazePoint(5 * ROBOT_LENGTH, 5 * ROBOT_LENGTH);
+        MazePoint goal = new MazePoint(5, 5);
         AStarGridWorld gridWorld = new AStarGridWorld(goal);
 
         PositionInGrid position = new PositionInGrid();
@@ -80,7 +79,7 @@ public class AStarTest {
 
     @Test
     public void testBigWall(){
-        MazePoint goal = new MazePoint(5 * ROBOT_LENGTH, 5 * ROBOT_LENGTH);
+        MazePoint goal = new MazePoint(5, 5);
         AStarGridWorld gridWorld = new AStarGridWorld(goal);
 
         PositionInGrid position = new PositionInGrid();
@@ -110,7 +109,7 @@ public class AStarTest {
 
     @Test
     public void testBigWall2(){
-        MazePoint goal = new MazePoint(5 * ROBOT_LENGTH, 5 * ROBOT_LENGTH);
+        MazePoint goal = new MazePoint(5, 5);
         AStarGridWorld gridWorld = new AStarGridWorld(goal);
 
         PositionInGrid position = new PositionInGrid();

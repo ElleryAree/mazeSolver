@@ -1,11 +1,13 @@
 package localization.grid;
 
+import dataTransmitter.GridDataTransmitter;
 import localization.maze.Direction;
 import localization.maze.DirectionalPoint;
 import localization.maze.MazePoint;
 import main.RobotConstants;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 /*
 Grid[6][5]
 
@@ -28,7 +30,7 @@ public abstract class GridWorld {
     public static final int GOAL = 0;
     public static final int MAX_SENSOR_MEASUREMENT = 255;
     public static final int MAX_WALL_DISTANCE_IN_CELLS = 3;
-    public static final int MAX_WALL_DISTANCE = RobotConstants.ROBOT_LENGTH * MAX_WALL_DISTANCE_IN_CELLS;
+//    public static final int MAX_WALL_DISTANCE = RobotConstants.ROBOT_LENGTH * MAX_WALL_DISTANCE_IN_CELLS;
 
     private int[][] grid;
     private DirectionalPoint robotLocation;
@@ -36,8 +38,8 @@ public abstract class GridWorld {
     private int initialValue;
 
     public GridWorld(MazePoint goal, int initialValue) {
-        int length = getDistanceInCells(goal.getY());
-        int width = (int) Math.ceil(Math.abs(goal.getX()) / RobotConstants.ROBOT_LENGTH);
+        int length = Math.abs(goal.getY());
+        int width = Math.abs(goal.getX());
         this.goal = new MazePoint(goal.getX() > 0 ? width - 1 : 0, goal.getY() > 0 ? length - 1 : 0);
         this.initialValue = initialValue;
 
@@ -67,19 +69,29 @@ public abstract class GridWorld {
         PositionInGrid rotatedPosition = rotateMeasurements(position);
         increaseGridAndUpdateWalls(rotatedPosition);
 
+        GridDataTransmitter.convertAndSendData(grid);
+        GridDataTransmitter.convertAndSendData("\nR\n"
+                + robotLocation.getX()+ ","
+                + robotLocation.getY() + ","
+                + robotLocation.getDirection().getDegrees());
+
         return findWay();
     }
 
     protected abstract Direction findWay();
 
-    protected void increaseGridAndUpdateWalls(PositionInGrid position) {
-        int x = getDistanceInCells(position.getCurrentPosition().getX());
-        int y = getDistanceInCells(position.getCurrentPosition().getY());
+    protected List<DirectionalPoint> getRoute(){
+        return new ArrayList<DirectionalPoint>();
+    }
 
-        int coordinateOfTheWallOnTheLeft = x - (position.getLeftMeasurement() < MAX_SENSOR_MEASUREMENT ? getDistanceInCells(position.getLeftMeasurement()) : x);
-        int coordinateOfTheWallOnTheRight = x + (position.getRightMeasurement() < MAX_SENSOR_MEASUREMENT ? getDistanceInCells(position.getRightMeasurement()) : 0);
-        int coordinateOfTheWallInFront = y + (position.getFrontMeasurement() < MAX_SENSOR_MEASUREMENT ? getDistanceInCells(position.getFrontMeasurement()) : 0);
-        int coordinateOfTheWallOnTheBack = y - (position.getBackMeasure() < MAX_SENSOR_MEASUREMENT ? getDistanceInCells(position.getBackMeasure()) : y);
+    protected void increaseGridAndUpdateWalls(PositionInGrid position) {
+        int x = position.getCurrentPosition().getX();
+        int y = position.getCurrentPosition().getY();
+
+        int coordinateOfTheWallOnTheLeft = x - (position.getLeftMeasurement() < MAX_SENSOR_MEASUREMENT ? position.getLeftMeasurement() : x);
+        int coordinateOfTheWallOnTheRight = x + (position.getRightMeasurement() < MAX_SENSOR_MEASUREMENT ? position.getRightMeasurement() : 0);
+        int coordinateOfTheWallInFront = y + (position.getFrontMeasurement() < MAX_SENSOR_MEASUREMENT ? position.getFrontMeasurement() : 0);
+        int coordinateOfTheWallOnTheBack = y - (position.getBackMeasure() < MAX_SENSOR_MEASUREMENT ? position.getBackMeasure() : y);
 
         if (coordinateOfTheWallOnTheLeft < x - MAX_WALL_DISTANCE_IN_CELLS){
             coordinateOfTheWallOnTheLeft = x - MAX_WALL_DISTANCE_IN_CELLS;
@@ -103,10 +115,11 @@ public abstract class GridWorld {
         goal.setY(goal.getY() + plusToY);
         goal.setX(goal.getX() + plusToX);
 
-        position.getCurrentPosition().setY((position.getCurrentPosition().getY()) + (plusToY * RobotConstants.ROBOT_LENGTH));
-        position.getCurrentPosition().setX(position.getCurrentPosition().getX()
-                + (plusToX * RobotConstants.ROBOT_LENGTH));
+        position.getCurrentPosition().setY((position.getCurrentPosition().getY()) + plusToY);
+        position.getCurrentPosition().setX(position.getCurrentPosition().getX() + plusToX);
         robotLocation = position.getCurrentPosition();
+//        robotLocation.setX(robotLocation.getX() + plusToX);
+//        robotLocation.setY(robotLocation.getY() + plusToY);
 
         int[][] newGrid = initGrid(newLength, newWidth);
         for (int i=0; i<grid.length; i++){
@@ -120,14 +133,10 @@ public abstract class GridWorld {
         grid = newGrid;
 
 
-        if (position.getLeftMeasurement() < MAX_WALL_DISTANCE)
-            grid[y + plusToY][coordinateOfTheWallOnTheLeft + plusToX] = WALL;
-        if (position.getRightMeasurement() < MAX_WALL_DISTANCE)
-            grid[y+ plusToY][coordinateOfTheWallOnTheRight + plusToX] = WALL;
-        if (position.getFrontMeasurement() < MAX_WALL_DISTANCE)
-            grid[coordinateOfTheWallInFront + plusToY][x + plusToX] = WALL;
-        if (position.getBackMeasure() < MAX_WALL_DISTANCE)
-            grid[coordinateOfTheWallOnTheBack + plusToY][x + plusToX] = WALL;
+        grid[y + plusToY][coordinateOfTheWallOnTheLeft + plusToX] = WALL;
+        grid[y+ plusToY][coordinateOfTheWallOnTheRight + plusToX] = WALL;
+        grid[coordinateOfTheWallInFront + plusToY][x + plusToX] = WALL;
+        grid[coordinateOfTheWallOnTheBack + plusToY][x + plusToX] = WALL;
     }
 
     public int[][] getGrid() {
@@ -136,8 +145,8 @@ public abstract class GridWorld {
 
     public static PositionInGrid rotateMeasurements(PositionInGrid position){
         PositionInGrid positionInGrid = rotateMeasurements(position, position.getCurrentPosition().getDirection());
-        positionInGrid.getCurrentPosition().setX(getDistanceInCells(positionInGrid.getCurrentPosition().getX()));
-        positionInGrid.getCurrentPosition().setY(getDistanceInCells(positionInGrid.getCurrentPosition().getY()));
+        positionInGrid.getCurrentPosition().setX(positionInGrid.getCurrentPosition().getX());
+        positionInGrid.getCurrentPosition().setY(positionInGrid.getCurrentPosition().getY());
         return positionInGrid;
     }
 
@@ -178,7 +187,7 @@ public abstract class GridWorld {
         String result = "";
         for (int i=grid.length - 1; i>=0; i--){
             for (int j=0; j<grid[i].length; j++){
-                if (j == getDistanceInCells(robotLocation.getX()) && i == getDistanceInCells(robotLocation.getY())){
+                if (j == robotLocation.getX() && i == robotLocation.getY()){
                     switch (robotLocation.getDirection()){
                         case FRONT:
                             result += "^ ";
@@ -197,7 +206,11 @@ public abstract class GridWorld {
                 } else if (grid[i][j] == -2){
                     result += "- ";
                 } else {
-                    result += grid[i][j] + " ";
+                    if (grid[i][j] != GOAL && getRoute().contains(new MazePoint(j, i))){
+                        result += "o ";
+                    } else {
+                        result += grid[i][j] + " ";
+                    }
                 }
             }
             result += '\n';

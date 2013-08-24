@@ -1,16 +1,22 @@
 package display;
 
-import lejos.nxt.*;
-import main.RobotConstants;
+import lejos.nxt.Button;
+import lejos.nxt.LCD;
 import localization.maze.MazePoint;
+import main.RobotConstants;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Date: 8/19/12
  */
 @SuppressWarnings("ALL")
-public class EnterInformation {
+public class EnterInformation{
     private static final int X_LINE = 3;
     private static final int Y_LINE = 5;
+
+    private static List<DisplayableFeature> features = new ArrayList<DisplayableFeature>();
 
     public static void showGreetings() {
         LCD.drawString("  *************", 0, 0);
@@ -27,7 +33,7 @@ public class EnterInformation {
         LCD.drawString("Set x:", 0, X_LINE);
 
         MazePoint result = new MazePoint();
-        int currentValue = 1;
+        int currentValue = 0;
         int currentY = X_LINE;
 
         while (true) {
@@ -39,8 +45,8 @@ public class EnterInformation {
                 if (currentY == Y_LINE) {
                     LCD.clear(currentY);
                     LCD.clear(currentY + 1);
-                    result.setY(currentValue * RobotConstants.ROBOT_LENGTH);
-                    currentValue = (int) (result.getX() / RobotConstants.ROBOT_LENGTH);
+                    result.setY(currentValue);
+                    currentValue = (int) (result.getX());
                     currentY = X_LINE;
                 } else {
                     result = null;
@@ -49,13 +55,13 @@ public class EnterInformation {
             }
             if (more == Button.ID_ENTER) {
                 if (currentY == Y_LINE) {
-                    result.setY(currentValue * RobotConstants.ROBOT_LENGTH);
+                    result.setY(currentValue);
                     break;
                 }
 
                 currentY = Y_LINE;
-                result.setX(currentValue * RobotConstants.ROBOT_LENGTH);
-                currentValue = (int)(result.getY() / RobotConstants.ROBOT_LENGTH) == 0 ? 1 : (int) (result.getY() / RobotConstants.ROBOT_LENGTH);
+                result.setX(currentValue);
+                currentValue = (int)(result.getY()) == 0 ? 0 : (int) (result.getY());
                 LCD.drawString("Set y:", 0, currentY);
             }
 
@@ -77,23 +83,34 @@ public class EnterInformation {
         return result;
     }
 
-    public static boolean enterLoggerSetting() {
+    public static <T> void registerFeature(DisplayableFeature<T> feature){
+        features.add(feature);
+    }
+
+    private static void enterFeature(DisplayableFeature feature) {
         LCD.clear();
-        LCD.drawString("Use remote\nlogger?", 0, 0);
-        boolean useLogger = false;
+        LCD.drawString(feature.getCaption(), 0, 0);
+        boolean answer = false;
 
         while (true) {
-            LCD.drawString(useLogger ? "Yes" : " No", 3, 2);
+            LCD.drawString(answer ? "Yes" : " No", 3, 2);
             int more = Button.waitForAnyPress();
 
             if (more == Button.ID_ENTER || more == Button.ID_ESCAPE) {
                 LCD.clear();
-                return useLogger;
+                feature.callback(answer);
+                return;
             }
 
             if (more == Button.ID_LEFT || more == Button.ID_RIGHT) {
-                useLogger = !useLogger;
+                answer = !answer;
             }
+        }
+    }
+
+    public static void setupFeatures() {
+        for (DisplayableFeature feature: features){
+            enterFeature(feature);
         }
     }
 }

@@ -1,13 +1,25 @@
 package main;
 
-import clustering.DataCollector;
 import console.LoggerProvider;
+import dataTransmitter.GridDataTransmitter;
 import display.EnterInformation;
+import head.RemoteSense;
 import head.Sense;
-import lejos.nxt.*;
-import lejos.robotics.objectdetection.*;
+import lejos.nxt.Button;
+import lejos.nxt.LCD;
+import lejos.nxt.SensorPort;
+import lejos.nxt.TouchSensor;
+import lejos.robotics.objectdetection.Feature;
+import lejos.robotics.objectdetection.FeatureDetector;
+import lejos.robotics.objectdetection.FeatureListener;
+import lejos.robotics.objectdetection.TouchFeatureDetector;
 import localization.maze.MazePoint;
-import movement.*;
+import movement.FakeRunner;
+import movement.GridWorldRunner;
+import movement.MovementInMaze;
+import movement.MovementTest;
+
+import java.util.Arrays;
 
 /**
  * Entry point.
@@ -22,7 +34,8 @@ public class Main {
         debugMode = args != null && args.length > 0;
 
         assertHit();
-        maseSolve(args);
+        mazeSolve(args);
+
 //        testMovement();
 //        loggerTest();
 
@@ -52,7 +65,8 @@ public class Main {
     }
 
     private static void loggerTest(){
-        LoggerProvider.initiateLogger(false, false);
+        LoggerProvider.initProvider(false);
+        LoggerProvider.getProvider().callback(false);
 
         Sense sense = new Sense();
         sense.senseIteration();
@@ -66,20 +80,19 @@ public class Main {
         Button.waitForAnyPress();
     }
 
-    private static void maseSolve(String[] args) {
-        boolean useLogger = true;
+    private static void mazeSolve(String[] args) {
         if (!debugMode){
-        EnterInformation.showGreetings();
-        useLogger = EnterInformation.enterLoggerSetting();
+            LoggerProvider.initProvider(debugMode);
+            GridDataTransmitter.initTransmitter();
+
+            EnterInformation.showGreetings();
+            EnterInformation.setupFeatures();
         }
 
         MazePoint goal;
 
-        LoggerProvider.initiateLogger(debugMode, useLogger);
-
         if (debugMode) {
-            goal = new MazePoint(Double.valueOf(args[0]) * RobotConstants.ROBOT_LENGTH,
-                                 Double.valueOf(args[1]) * RobotConstants.ROBOT_LENGTH);
+            goal = new MazePoint(Double.valueOf(args[0]), Double.valueOf(args[1]));
         } else {
             goal = EnterInformation.enter();
             if (goal == null) {
@@ -112,6 +125,7 @@ public class Main {
 
         if (!debugMode) {
             LCD.drawString("Complited", 0, 4);
+            GridDataTransmitter.convertAndSendData("0\nF\nComplited!");
             Button.waitForAnyPress();
         }
     }
@@ -120,8 +134,14 @@ public class Main {
      * Entry point for testing usage of clustering,
      * based on many sonic sensor's readings
      */
-    private static void sensorTest(){
-        DataCollector collector = new DataCollector();
-        collector.collectAndPrecess();
+    private static void sensorTest() throws InterruptedException {
+        GridDataTransmitter.initTransmitter(true);
+
+        RemoteSense sense = new RemoteSense();
+        sense.senseIteration();
+
+        GridDataTransmitter.convertAndSendData("0\nF\n" +
+                Arrays.toString(sense.getFrontArray())
+                + ", min: " + Sense.getMinimumDistance(sense.getFrontArray()));
     }
 }

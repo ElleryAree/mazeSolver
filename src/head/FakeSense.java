@@ -13,24 +13,24 @@ public class FakeSense implements SensorReadings{
     }
 
     public void getSense(PositionInGrid position) {
-        int x = GridWorld.getDistanceInCells(position.getCurrentPosition().getX());
-        int y = GridWorld.getDistanceInCells(position.getCurrentPosition().getY());
+        int x = position.getCurrentPosition().getX();
+        int y = position.getCurrentPosition().getY();
 
         for (int i=x; i>=0; i--){
             if (grid[y][i] == GridWorld.WALL){
-                position.setLeftMeasure((int) (i * RobotConstants.ROBOT_LENGTH));
+                position.setLeftMeasure(i * RobotConstants.ROBOT_LENGTH);
                 break;
             }
         }
         for (int i=x; i<grid[y].length; i++){
             if (grid[y][i] == GridWorld.WALL){
-                position.setRightMeasure((int) (i * RobotConstants.ROBOT_LENGTH));
+                position.setRightMeasure(i * RobotConstants.ROBOT_LENGTH);
                 break;
             }
         }
         for (int i=y; i < grid.length; i++){
             if (grid[i][x] == GridWorld.WALL){
-                position.setFrontMeasure((int) (i * RobotConstants.ROBOT_LENGTH));
+                position.setFrontMeasure(i * RobotConstants.ROBOT_LENGTH);
                 break;
             }
         }

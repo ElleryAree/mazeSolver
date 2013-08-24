@@ -24,25 +24,25 @@ public class MockGridMovement implements RunnerWithSenses {
         PositionInGrid position = new PositionInGrid();
 
         DirectionalPoint newPosition = new DirectionalPoint();
-        newPosition.setX(currentPosition.getCurrentPosition().getX() * (int) RobotConstants.ROBOT_LENGTH);
-        newPosition.setY(currentPosition.getCurrentPosition().getY() * (int) RobotConstants.ROBOT_LENGTH);
+        newPosition.setX(currentPosition.getCurrentPosition().getX());
+        newPosition.setY(currentPosition.getCurrentPosition().getY());
         newPosition.setDirection(direction);
 
         switch (direction) {
             case LEFT: {
-                newPosition.setX(newPosition.getX() - (int) RobotConstants.ROBOT_LENGTH);
+                newPosition.setX(newPosition.getX() - RobotConstants.ROBOT_LENGTH);
                 break;
             }
             case RIGHT: {
-                newPosition.setX(newPosition.getX() + (int) RobotConstants.ROBOT_LENGTH);
+                newPosition.setX(newPosition.getX() + RobotConstants.ROBOT_LENGTH);
                 break;
             }
             case BACK: {
-                newPosition.setY(newPosition.getY() - (int) RobotConstants.ROBOT_LENGTH);
+                newPosition.setY(newPosition.getY() - RobotConstants.ROBOT_LENGTH);
                 break;
             }
             case FRONT:{
-                newPosition.setY(newPosition.getY() + (int) RobotConstants.ROBOT_LENGTH);
+                newPosition.setY(newPosition.getY() + RobotConstants.ROBOT_LENGTH);
             }
         }
         position.setCurrentPosition(newPosition);
@@ -53,24 +53,24 @@ public class MockGridMovement implements RunnerWithSenses {
 
     @Override
     public void getSense(PositionInGrid position) {
-        int x = GridWorld.getDistanceInCells(position.getCurrentPosition().getX());
-        int y = GridWorld.getDistanceInCells(position.getCurrentPosition().getY());
+        int x = position.getCurrentPosition().getX();
+        int y = position.getCurrentPosition().getY();
 
         for (int i=x; i>=0; i--){
             if (grid[y][i] == GridWorld.WALL){
-                position.setLeftMeasure((int) (i * RobotConstants.ROBOT_LENGTH));
+                position.setLeftMeasure(i);
                 break;
             }
         }
         for (int i=x; i<grid[y].length; i++){
             if (grid[y][i] == GridWorld.WALL){
-                position.setRightMeasure((int) (i * RobotConstants.ROBOT_LENGTH));
+                position.setRightMeasure(i);
                 break;
             }
         }
         for (int i=y; i < grid.length; i++){
             if (grid[i][x] == GridWorld.WALL){
-                position.setFrontMeasure((int) (i * RobotConstants.ROBOT_LENGTH));
+                position.setFrontMeasure(i);
                 break;
             }
         }

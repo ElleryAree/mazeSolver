@@ -1,10 +1,35 @@
 package console;
 
 
-public class LoggerProvider {
-    private static Logger logger;
+import display.DisplayableFeature;
+import display.FeatureCallback;
+import main.Feature;
 
-    public static void initiateLogger(boolean debug, boolean useLogger){
+public class LoggerProvider extends Feature implements FeatureCallback<Boolean>{
+    private static LoggerProvider provider;
+
+    private Logger logger;
+    private boolean debug;
+
+
+    public static LoggerProvider getProvider(){
+        if (provider == null)
+            throw new RuntimeException("Not initialized");
+
+        return provider;
+    }
+
+    public static void initProvider(boolean debug) {
+        provider = new LoggerProvider(debug);
+    }
+
+    private LoggerProvider(boolean debug) {
+        super();
+        this.debug = debug;
+    }
+
+
+    private void initiateLogger(boolean useLogger){
         if (useLogger){
             logger = new ConsoleLogger(debug);
         } else {
@@ -13,10 +38,24 @@ public class LoggerProvider {
     }
 
     public static void sendMessage(String message){
-        logger.message(message);
+        getProvider().logger.message(message);
     }
 
     public static void closeLogger(){
-        logger.close();
+        getProvider().logger.close();
+    }
+
+    @Override
+    protected DisplayableFeature getFeature() {
+        DisplayableFeature<Boolean> feature = new DisplayableFeature<Boolean>();
+        feature.setCaption("Use remote\nlogger?");
+        feature.setCallback(this);
+
+        return feature;
+    }
+
+    @Override
+    public void callback(Boolean answer) {
+        initiateLogger(answer);
     }
 }
