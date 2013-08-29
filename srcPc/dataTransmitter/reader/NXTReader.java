@@ -51,14 +51,11 @@ public class NXTReader extends AbstractReader {
             throw new NoBrickException();
         }
 
-        System.out.println(nxts[0]);
-
         nxtComm.open(nxts[0]);
         return nxtComm;
     }
 
     public void closeNXTConnection() throws IOException {
-        System.out.println("Closing nxt connection");
         if (nxtComm != null)
             nxtComm.close();
     }

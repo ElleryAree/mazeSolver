@@ -3,7 +3,7 @@ package dataTransmitter.processing;
 import dataTransmitter.reader.exception.BadReadingsException;
 import visualize.UpdatableView;
 
-public class GridDataProcessor implements DataProcessor {
+public class GridDataProcessor extends ContinuingDataProcessor{
     private int[][] grid;
 
     @Override
@@ -33,11 +33,6 @@ public class GridDataProcessor implements DataProcessor {
     @Override
     public void updateView(UpdatableView view) {
         view.updateWorld(grid);
-    }
-
-    @Override
-    public boolean doContinue() {
-        return true;
     }
 
     public static String getCode(){

@@ -4,7 +4,7 @@ package dataTransmitter.processing;
 import dataTransmitter.reader.exception.BadReadingsException;
 import visualize.UpdatableView;
 
-public class RobotPositionProcessor implements DataProcessor {
+public class RobotPositionProcessor extends ContinuingDataProcessor{
     private int x;
     private int y;
     private int rotation;
@@ -24,11 +24,6 @@ public class RobotPositionProcessor implements DataProcessor {
     @Override
     public void updateView(UpdatableView view) {
         view.updateRobot(x, y, rotation);
-    }
-
-    @Override
-    public boolean doContinue() {
-        return true;
     }
 
     public static String getCode(){

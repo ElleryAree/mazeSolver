@@ -20,7 +20,7 @@ public class MockGridMovement implements RunnerWithSenses {
     }
 
     @Override
-    public PositionInGrid move(Direction direction, PositionInGrid currentPosition) {
+    public void move(Direction direction, PositionInGrid currentPosition) {
         PositionInGrid position = new PositionInGrid();
 
         DirectionalPoint newPosition = new DirectionalPoint();
@@ -48,7 +48,7 @@ public class MockGridMovement implements RunnerWithSenses {
         position.setCurrentPosition(newPosition);
         getSense(position);
 
-        return position;
+//        return position;
     }
 
     @Override
@@ -76,22 +76,21 @@ public class MockGridMovement implements RunnerWithSenses {
         }
 
 
-        PositionInGrid rotatedPosition = position;
         switch (position.getCurrentPosition().getDirection()){
             case LEFT:
-                rotatedPosition = GridWorld.rotateMeasurements(position, Direction.RIGHT);
+                GridWorld.rotateMeasurements(position);
                 break;
             case RIGHT:
-                rotatedPosition = GridWorld.rotateMeasurements(position, Direction.LEFT);
+                GridWorld.rotateMeasurements(position);
                 break;
             case BACK:
-                rotatedPosition = GridWorld.rotateMeasurements(position, Direction.BACK);
+                GridWorld.rotateMeasurements(position);
                 break;
         }
 
-        position.setFrontMeasure(rotatedPosition.getFrontMeasurement());
-        position.setLeftMeasure(rotatedPosition.getLeftMeasurement());
-        position.setRightMeasure(rotatedPosition.getRightMeasurement());
-        position.setRearMeasure(rotatedPosition.getBackMeasure());
+        position.setFrontMeasure(position.getFrontMeasurement());
+        position.setLeftMeasure(position.getLeftMeasurement());
+        position.setRightMeasure(position.getRightMeasurement());
+        position.setRearMeasure(position.getBackMeasure());
     }
 }

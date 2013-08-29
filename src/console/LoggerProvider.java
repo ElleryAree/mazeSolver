@@ -22,6 +22,10 @@ public class LoggerProvider extends Feature implements FeatureCallback<Boolean>{
     public static void initProvider(boolean debug) {
         provider = new LoggerProvider(debug);
     }
+    public static void initProvider(boolean debug, boolean useLogger) {
+        provider = new LoggerProvider(debug);
+        provider.initiateLogger(useLogger);
+    }
 
     private LoggerProvider(boolean debug) {
         super();

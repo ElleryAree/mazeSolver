@@ -28,6 +28,7 @@ public class AStarGridWorld extends GridWorld{
             LoggerProvider.sendMessage("Route: " + route);
         }
 
+        GridDataTransmitter.sendRouteMessage(route);
         return getNextStep();
     }
 
@@ -72,7 +73,7 @@ public class AStarGridWorld extends GridWorld{
             }
         }
 
-        GridDataTransmitter.convertAndSendData("0\nF\nFailed: No route!");
+        GridDataTransmitter.sendFinishedMessage("Failed: No route!");
         throw new RuntimeException("No route");
     }
 

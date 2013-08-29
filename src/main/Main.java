@@ -3,7 +3,7 @@ package main;
 import console.LoggerProvider;
 import dataTransmitter.GridDataTransmitter;
 import display.EnterInformation;
-import head.RemoteSense;
+import head.OnlyFirstSense;
 import head.Sense;
 import lejos.nxt.Button;
 import lejos.nxt.LCD;
@@ -13,6 +13,11 @@ import lejos.robotics.objectdetection.Feature;
 import lejos.robotics.objectdetection.FeatureDetector;
 import lejos.robotics.objectdetection.FeatureListener;
 import lejos.robotics.objectdetection.TouchFeatureDetector;
+import localization.grid.GridWorld;
+import localization.grid.PositionInGrid;
+import localization.grid.aStar.AStarGridWorld;
+import localization.maze.Direction;
+import localization.maze.DirectionalPoint;
 import localization.maze.MazePoint;
 import movement.FakeRunner;
 import movement.GridWorldRunner;
@@ -23,8 +28,6 @@ import java.util.Arrays;
 
 /**
  * Entry point.
- * <p/>
- * User: elleryaree
  * Date: 8/11/12
  */
 public class Main {
@@ -43,6 +46,9 @@ public class Main {
     }
 
     private static void testMovement(){
+        GridDataTransmitter.initTransmitter(false);
+        LoggerProvider.initProvider(false, false);
+
         MovementTest.test();
     }
 
@@ -65,8 +71,7 @@ public class Main {
     }
 
     private static void loggerTest(){
-        LoggerProvider.initProvider(false);
-        LoggerProvider.getProvider().callback(false);
+        LoggerProvider.initProvider(false, false);
 
         Sense sense = new Sense();
         sense.senseIteration();
@@ -125,7 +130,7 @@ public class Main {
 
         if (!debugMode) {
             LCD.drawString("Complited", 0, 4);
-            GridDataTransmitter.convertAndSendData("0\nF\nComplited!");
+            GridDataTransmitter.sendFinishedMessage("Complited!");
             Button.waitForAnyPress();
         }
     }
@@ -136,12 +141,28 @@ public class Main {
      */
     private static void sensorTest() throws InterruptedException {
         GridDataTransmitter.initTransmitter(true);
+        LoggerProvider.initProvider(false, false);
 
-        RemoteSense sense = new RemoteSense();
-        sense.senseIteration();
+        Sense sense = new OnlyFirstSense();
 
-        GridDataTransmitter.convertAndSendData("0\nF\n" +
-                Arrays.toString(sense.getFrontArray())
-                + ", min: " + Sense.getMinimumDistance(sense.getFrontArray()));
+        int count = 5;
+
+        int[] fronts = new int[count];
+        int minimumDistance;
+
+        GridWorld world = new AStarGridWorld(new MazePoint(4, 4));
+        PositionInGrid position = new PositionInGrid();
+        position.setCurrentPosition(new DirectionalPoint(Direction.FRONT, 2, 0));
+
+        for (int i=0; i<count; i++){
+            sense.senseIteration();
+            minimumDistance = sense.getFront();
+            fronts[i] = minimumDistance;
+            position.setFrontMeasure(GridWorld.getDistanceInCells(minimumDistance));
+            world.actualize(position);
+        }
+
+        GridDataTransmitter.convertAndSendData(world.getGrid());
+        GridDataTransmitter.sendFinishedMessage("fronts: " + Arrays.toString(fronts));
     }
 }

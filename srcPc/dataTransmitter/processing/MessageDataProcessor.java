@@ -3,7 +3,7 @@ package dataTransmitter.processing;
 import dataTransmitter.reader.exception.BadReadingsException;
 import visualize.UpdatableView;
 
-public class MessageDataProcessor implements DataProcessor {
+public class MessageDataProcessor extends ContinuingDataProcessor{
     private String message;
 
     @Override
@@ -13,12 +13,8 @@ public class MessageDataProcessor implements DataProcessor {
 
     @Override
     public void updateView(UpdatableView view) {
+        System.out.println(message);
         view.showMessage(message);
-    }
-
-    @Override
-    public boolean doContinue() {
-        return true;
     }
 
     public static String getCode(){

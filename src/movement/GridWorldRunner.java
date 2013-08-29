@@ -37,7 +37,7 @@ public class GridWorldRunner {
 
         while (direction != null){
             history.add(direction);
-            position = movement.move(direction, position);
+            movement.move(direction, position);
             direction = gridWorld.actualize(position);
 
             logState(position, direction);
@@ -69,7 +69,11 @@ public class GridWorldRunner {
     private boolean isGoal(PositionInGrid position) {
         int y = position.getCurrentPosition().getY();
         int x = position.getCurrentPosition().getX();
-        return gridWorld.getGrid()[y][x] == GridWorld.GOAL;
+
+//        GridDataTransmitter.sendInfoMessage("current: x: " + x + ", y: " + y +
+//                "; goal_1: " + gridWorld.getGrid()[y][x]);
+
+        return gridWorld.getGoal().getX() == x && gridWorld.getGoal().getY() == y;
     }
 
     public String printGrid(){

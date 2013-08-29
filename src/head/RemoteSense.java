@@ -8,13 +8,13 @@ public class RemoteSense extends Sense{
     @Override
     public void senseIteration() {
         turn(90);
-        right = senceDistances();
+        right = senseDistances();
 
         turn(-90);
-        front = senceDistances();
+        front = senseDistances();
 
         turn(-90);
-        left = senceDistances();
+        left = senseDistances();
 
         turn(90);
     }

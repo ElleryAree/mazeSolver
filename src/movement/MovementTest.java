@@ -2,12 +2,14 @@ package movement;
 
 
 import console.LoggerProvider;
-import localization.grid.PositionInGrid;
+import dataTransmitter.GridDataTransmitter;
 import lejos.nxt.Button;
+import localization.grid.PositionInGrid;
 import localization.maze.Direction;
 import localization.maze.DirectionalPoint;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MovementTest {
     public static void test(){
@@ -20,17 +22,39 @@ public class MovementTest {
         PositionInGrid positionInGrid = new PositionInGrid();
         positionInGrid.setCurrentPosition(point);
 
-        directions.add(Direction.FRONT);
-        directions.add(Direction.RIGHT);
-        directions.add(Direction.LEFT);
-        directions.add(Direction.BACK);
+        generateGrandRoute(directions);
+
 
         LoggerProvider.sendMessage("Plan is" + directions);
         for (Direction direction: directions){
-            positionInGrid = movementInMaze.move(direction, positionInGrid);
+            movementInMaze.move(direction, positionInGrid);
         }
 
         System.out.println(positionInGrid.getCurrentPosition().toString());
+        GridDataTransmitter.sendFinishedMessage("Done!");
         Button.waitForAnyPress();
+    }
+
+    protected static void generateGrandRoute(List<Direction> directions) {
+        directions.add(Direction.FRONT);
+        directions.add(Direction.FRONT);
+        directions.add(Direction.RIGHT);
+        directions.add(Direction.FRONT);
+        directions.add(Direction.LEFT);
+        directions.add(Direction.FRONT);
+        directions.add(Direction.BACK);
+
+        directions.add(Direction.BACK);
+        directions.add(Direction.RIGHT);
+        directions.add(Direction.BACK);
+        directions.add(Direction.LEFT);
+
+        directions.add(Direction.LEFT);
+        directions.add(Direction.RIGHT);
+
+        directions.add(Direction.RIGHT);
+        directions.add(Direction.LEFT);
+        directions.add(Direction.BACK);
+        directions.add(Direction.FRONT);
     }
 }

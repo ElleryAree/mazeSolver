@@ -29,7 +29,25 @@ public class DataTransmitter extends Feature implements FeatureCallback<Boolean>
         super();
     }
 
-    public static void convertAndSendData(String rawData){
+    public static void sendFinishedMessage(String message){
+        sendMessage("F", message);
+    }
+    public static void sendInfoMessage(String message){
+        sendMessage("M", message);
+    }
+
+    public static void sendRobotLocation(int x, int y, int rotation){
+        sendMessage("R", x + "," + y + "," + rotation);
+    }
+
+    public static void sendMessage(String code, String message){
+        convertAndSendData("00\n" + code + "\n" + message);
+    }
+
+    protected static void convertAndSendData(String rawData){
+        if (transmitter == null)
+            return;
+
         try {
             transmitter.sendData(rawData);
         } catch (IOException e) {

@@ -1,5 +1,9 @@
 package dataTransmitter;
 
+import localization.maze.DirectionalPoint;
+
+import java.util.List;
+
 public class GridDataTransmitter extends DataTransmitter {
 
 
@@ -19,6 +23,17 @@ public class GridDataTransmitter extends DataTransmitter {
         }
 
         return join(rows, "|");
+    }
+
+    public static void sendRouteMessage(List<DirectionalPoint> route) {
+        String[] points = new String[route.size()];
+
+        for (int i=0; i<route.size(); i++ ){
+            DirectionalPoint point = route.get(i);
+            points[i] = point.getX() + "," + point.getY() + "," + point.getDirection().getDegrees();
+        }
+
+        sendMessage("RT", join(points, "|"));
     }
 
     /**

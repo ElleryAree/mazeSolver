@@ -28,7 +28,7 @@ public class SimulateActualMovement {
 
         gridWorld.printGrid();
         FakeRunner runner = new FakeRunner(gridWorld.getGrid());
-        positionInGrid = runner.move(direction, positionInGrid);
+        runner.move(direction, positionInGrid);
         direction = gridWorld.actualize(positionInGrid);
     }
 
@@ -54,7 +54,7 @@ public class SimulateActualMovement {
         System.out.println(gridWorld.printGrid());
         FakeRunner runner = new FakeRunner(gridWorld.getGrid());
 
-        positionInGrid = runner.move(direction, positionInGrid);
+        runner.move(direction, positionInGrid);
 
         direction = gridWorld.actualize(positionInGrid);
 

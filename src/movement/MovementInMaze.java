@@ -1,5 +1,6 @@
 package movement;
 
+import dataTransmitter.GridDataTransmitter;
 import head.Sense;
 import head.SensorReadings;
 import localization.grid.GridWorld;
@@ -34,85 +35,48 @@ public class MovementInMaze extends BasicMovement implements RunnerWithSenses {
         position.setFrontMeasure(GridWorld.getDistanceInCells(sense.getFront()));
         position.setLeftMeasure(GridWorld.getDistanceInCells(sense.getLeft()));
         position.setRightMeasure(GridWorld.getDistanceInCells(sense.getRight()));
+        position.setRearMeasure(0);
     }
 
     @Override
-    public PositionInGrid move(Direction direction, PositionInGrid currentPosition) {
-        PositionInGrid position = new PositionInGrid();
+    public void move(Direction direction, PositionInGrid position) {
+        DirectionalPoint currentPosition = position.getCurrentPosition();
 
-        DirectionalPoint newPosition = new DirectionalPoint();
-        newPosition.setX(currentPosition.getCurrentPosition().getX());
-        newPosition.setY(currentPosition.getCurrentPosition().getY());
-        Direction currentDirection = currentPosition.getCurrentPosition().getDirection();
+        Direction directionToTurn = convertDirection(currentPosition.getDirection(), direction);
+        currentPosition.setDirection(direction);
 
-        switch (direction) {
-            case LEFT: {
-                if (currentDirection == Direction.LEFT){
-                    newPosition.setDirection(Direction.BACK);
-                } else if (currentDirection == Direction.BACK){
-                    newPosition.setDirection(Direction.RIGHT);
-                } else if (currentDirection == Direction.RIGHT){
-                    newPosition.setDirection(Direction.FRONT);
-                } else{
-                    newPosition.setDirection(Direction.LEFT);
-                }
+        switch (currentPosition.getDirection()) {
+            case LEFT:
+                currentPosition.setX(currentPosition.getX() - 1);
                 break;
-            }
-            case RIGHT: {
-                if (currentDirection == Direction.LEFT){
-                    newPosition.setDirection(Direction.FRONT);
-                } else if (currentDirection == Direction.BACK){
-                    newPosition.setDirection(Direction.LEFT);
-                } else if (currentDirection == Direction.RIGHT){
-                    newPosition.setDirection(Direction.BACK);
-                } else{
-                    newPosition.setDirection(Direction.RIGHT);
-                }
+            case RIGHT:
+                currentPosition.setX(currentPosition.getX() + 1);
                 break;
-            }
-            case BACK: {
-                if (currentDirection == Direction.LEFT){
-                    newPosition.setDirection(Direction.RIGHT);
-                } else if (currentDirection == Direction.BACK){
-                    newPosition.setDirection(Direction.FRONT);
-                } else if (currentDirection == Direction.RIGHT){
-                    newPosition.setDirection(Direction.LEFT);
-                } else{
-                    newPosition.setDirection(Direction.BACK);
-                }
+            case BACK:
+                currentPosition.setY(currentPosition.getY() - 1);
                 break;
-            }
-            case FRONT:{
-                newPosition.setDirection(direction);
-            }
+            default:
+                currentPosition.setY(currentPosition.getY() + 1);
         }
 
-        switch (newPosition.getDirection()) {
-            case LEFT: {
-                newPosition.setX(newPosition.getX() - 1);
-                break;
-            }
-            case RIGHT: {
-                newPosition.setX(newPosition.getX() + 1);
-                break;
-            }
-            case BACK: {
-                newPosition.setY(newPosition.getY() - 1);
-                break;
-            }
-            case FRONT:{
-                newPosition.setY(newPosition.getY() + 1);
-            }
-        }
-        turn(direction.getDegrees());
+        turn(directionToTurn.getDegrees());
         forward(RobotConstants.ROBOT_LENGTH);
-        position.setCurrentPosition(newPosition);
         getSense(position);
-
-        return position;
     }
 
-    protected void setSense(SensorReadings sense) {
-        this.sense = sense;
+    protected static Direction convertDirection(Direction currentDirection, Direction newDirection) {
+        GridDataTransmitter.sendInfoMessage("Current position: " + currentDirection + ", new: " + newDirection);
+
+        int computedDirection = newDirection.getDegrees() - currentDirection.getDegrees();
+        if (computedDirection > 180){
+            computedDirection = 180 - computedDirection;
+        }
+        if (computedDirection <= -180){
+            computedDirection = 360 + computedDirection;
+        }
+
+        Direction direction = Direction.parseDegrees(computedDirection);
+        GridDataTransmitter.sendInfoMessage("Turn to: " + direction);
+        return direction;
     }
 }

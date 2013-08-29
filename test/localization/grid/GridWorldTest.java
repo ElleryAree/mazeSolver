@@ -211,6 +211,48 @@ public class GridWorldTest {
     }
 
     @Test
+    public void testIncreaseBottomWithWalls(){
+        GridWorld world = new DynamicGridWorld(new MazePoint(5, 5));
+        DirectionalPoint mazePoint = new DirectionalPoint(Direction.FRONT, 3, 2);
+        PositionInGrid positionInGrid = new PositionInGrid();
+        positionInGrid.setCurrentPosition(mazePoint);
+        positionInGrid.setLeftMeasure(2);
+        positionInGrid.setRightMeasure(2);
+        positionInGrid.setFrontMeasure(0);
+        positionInGrid.setRearMeasure(0);
+
+        world.increaseGridAndUpdateWalls(positionInGrid);
+        System.out.println(world.printGrid());
+
+        PositionInGrid positionInGrid1 = new PositionInGrid();
+        DirectionalPoint robotLocation = world.getRobotLocation();
+        robotLocation.setY(robotLocation.getY() + 1);
+        positionInGrid1.setCurrentPosition(robotLocation);
+        positionInGrid1.setLeftMeasure(4);
+        positionInGrid1.setRightMeasure(2);
+        positionInGrid1.setFrontMeasure(0);
+        positionInGrid1.setRearMeasure(0);
+
+        world.increaseGridAndUpdateWalls(positionInGrid1);
+        System.out.println(world.printGrid());
+
+        positionInGrid1 = new PositionInGrid();
+        robotLocation = world.getRobotLocation();
+        robotLocation.setY(robotLocation.getY() + 1);
+        positionInGrid1.setCurrentPosition(robotLocation);
+        positionInGrid1.setLeftMeasure(4);
+        positionInGrid1.setRightMeasure(2);
+        positionInGrid1.setFrontMeasure(0);
+        positionInGrid1.setRearMeasure(0);
+
+        world.increaseGridAndUpdateWalls(positionInGrid1);
+        System.out.println(world.printGrid());
+
+        //int[][] grid = checkWorldDimentions(world, 7, 5);
+        //Assert.assertEquals("Value at [4][4]", GridWorld.GOAL, grid[6][4]);
+    }
+
+    @Test
     public void testIncreaseBottomAndLeft(){
         GridWorld world = new DynamicGridWorld(new MazePoint(5, 5));
 

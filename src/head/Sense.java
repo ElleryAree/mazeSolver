@@ -8,9 +8,9 @@ import lejos.nxt.UltrasonicSensor;
 public class Sense implements SensorReadings{
     private final UltrasonicSensor sonar;
 
-    private int left;
-    private int right;
-    private int front;
+    protected int left;
+    protected int right;
+    protected int front;
 
     public Sense(){
         Motor.A.setSpeed(400);
@@ -21,13 +21,17 @@ public class Sense implements SensorReadings{
         Motor.A.rotate(degrees * 2);
     }
 
-    private int sense(){
-        int[] distances = senceDistances();
+    protected int sense(){
+        int[] distances = senseDistances();
 
         return getMinimumDistance(distances);
     }
 
-    protected int[] senceDistances() {
+    protected int senseOnce(){
+        return sonar.getDistance();
+    }
+
+    protected int[] senseDistances() {
         int[] distances = new int[8];
 
         sonar.ping();
@@ -63,11 +67,13 @@ public class Sense implements SensorReadings{
 
     public static int getMinimumDistance(int[] distances){
         int sum = 0;
+        int count = 0;
 
         for (int distance: distances){
             sum += distance;
+            if (distance > 0) count++;
         }
 
-        return sum/distances.length;
+        return count != 0 ? sum/count : 0;
     }
 }

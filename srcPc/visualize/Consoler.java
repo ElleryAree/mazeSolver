@@ -11,54 +11,30 @@ import lejos.pc.comm.NXTCommException;
 
 import java.io.IOException;
 
-public class Visualiser implements Pausable{
-    private boolean continueRun = true;
-    private SwingVisualization visualizer;
-    private AbstractReader reader;
+public class Consoler {
 
     public static void main(String[] args) throws NoBrickException, NXTCommException, IOException, InterruptedException {
-       new Visualiser().start(new NXTReader());
+        new Consoler().start(new NXTReader());
     }
 
-    @Override
-    public void pause() {
-        continueRun = false;
-    }
-
-    @Override
-    public void run() {
-        continueRun = true;
-    }
-
-    @Override
-    public boolean getContinueRun() {
-        return continueRun;
-    }
 
     protected void start(AbstractReader reader) throws InterruptedException, IOException {
-        SwingVisualization visualizer = SwingVisualization.startVisualizer(this);
+//        UpdatableView visualizer = new ConsoleDisplay();
 
-        this.visualizer = visualizer;
-        this.reader = reader;
-
-        mainLoop(reader, visualizer);
+//        mainLoop(reader, visualizer);
     }
 
-    private void mainLoop(AbstractReader reader, SwingVisualization visualizer) throws InterruptedException, IOException {
-        while(continueRun){
-            visualizer.showServiceMessage("Waiting update");
+    private void mainLoop(AbstractReader reader, UpdatableView visualizer) throws InterruptedException, IOException {
+        while(true){
             Thread.sleep(700);
 
             if (!reader.canRead()) {
-                visualizer.showServiceMessage("Brick not ready. Continue waiting");
                 for (int i=3; i>0; i--){
                     Thread.sleep(1000);
-                    visualizer.showServiceMessage("Waiting update: " + i);
                 }
                 continue;
             }
 
-            visualizer.showServiceMessage("Update received");
             DataProcessor processor;
             try {
                 Readings readings = reader.read();
@@ -74,9 +50,6 @@ public class Visualiser implements Pausable{
             }
 
             processor.updateView(visualizer);
-            if (!processor.doContinue()){
-                break;
-            }
         }
     }
 }

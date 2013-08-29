@@ -16,4 +16,14 @@ public enum Direction {
     public int getDegrees() {
         return degrees;
     }
+
+    public static Direction parseDegrees(int degree){
+        if (degree == LEFT.degrees)
+            return LEFT;
+        else if (degree == RIGHT.degrees)
+            return RIGHT;
+        else if (degree == FRONT.degrees)
+            return FRONT;
+        else return BACK;
+    }
 }

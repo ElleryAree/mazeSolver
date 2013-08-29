@@ -66,14 +66,12 @@ public abstract class GridWorld {
     }
 
     public Direction actualize(PositionInGrid position) {
-        PositionInGrid rotatedPosition = rotateMeasurements(position);
-        increaseGridAndUpdateWalls(rotatedPosition);
+        rotateMeasurements(position);
+        increaseGridAndUpdateWalls(position);
 
         GridDataTransmitter.convertAndSendData(grid);
-        GridDataTransmitter.convertAndSendData("\nR\n"
-                + robotLocation.getX()+ ","
-                + robotLocation.getY() + ","
-                + robotLocation.getDirection().getDegrees());
+        GridDataTransmitter.sendRobotLocation(robotLocation.getX(), robotLocation.getY(),
+                robotLocation.getDirection().getDegrees());
 
         return findWay();
     }
@@ -90,21 +88,21 @@ public abstract class GridWorld {
 
         int coordinateOfTheWallOnTheLeft = x - (position.getLeftMeasurement() < MAX_SENSOR_MEASUREMENT ? position.getLeftMeasurement() : x);
         int coordinateOfTheWallOnTheRight = x + (position.getRightMeasurement() < MAX_SENSOR_MEASUREMENT ? position.getRightMeasurement() : 0);
-        int coordinateOfTheWallInFront = y + (position.getFrontMeasurement() < MAX_SENSOR_MEASUREMENT ? position.getFrontMeasurement() : 0);
+            int coordinateOfTheWallInFront = y + (position.getFrontMeasurement() < MAX_SENSOR_MEASUREMENT ? position.getFrontMeasurement() : 0);
         int coordinateOfTheWallOnTheBack = y - (position.getBackMeasure() < MAX_SENSOR_MEASUREMENT ? position.getBackMeasure() : y);
 
-        if (coordinateOfTheWallOnTheLeft < x - MAX_WALL_DISTANCE_IN_CELLS){
-            coordinateOfTheWallOnTheLeft = x - MAX_WALL_DISTANCE_IN_CELLS;
+        /*if (coordinateOfTheWallOnTheLeft < x){
+            coordinateOfTheWallOnTheLeft = x;
         }
-        if (coordinateOfTheWallOnTheRight > x + MAX_WALL_DISTANCE_IN_CELLS){
-            coordinateOfTheWallOnTheRight = x + MAX_WALL_DISTANCE_IN_CELLS;
+        if (coordinateOfTheWallOnTheRight > x){
+            coordinateOfTheWallOnTheRight = x;
         }
-        if (coordinateOfTheWallInFront > y + MAX_WALL_DISTANCE_IN_CELLS){
-            coordinateOfTheWallInFront = y + MAX_WALL_DISTANCE_IN_CELLS;
+        if (coordinateOfTheWallInFront > y){
+            coordinateOfTheWallInFront = y;
         }
-        if (coordinateOfTheWallOnTheBack < y - MAX_WALL_DISTANCE_IN_CELLS){
-            coordinateOfTheWallOnTheBack = y - MAX_WALL_DISTANCE_IN_CELLS;
-        }
+        if (coordinateOfTheWallOnTheBack < y){
+            coordinateOfTheWallOnTheBack = y;
+        }*/
 
         int plusToX = coordinateOfTheWallOnTheLeft < 0 ? -1 * coordinateOfTheWallOnTheLeft : 0;
         int plusToY = coordinateOfTheWallOnTheBack < 0 ? -1 * coordinateOfTheWallOnTheBack : 0;
@@ -133,50 +131,45 @@ public abstract class GridWorld {
         grid = newGrid;
 
 
-        grid[y + plusToY][coordinateOfTheWallOnTheLeft + plusToX] = WALL;
-        grid[y+ plusToY][coordinateOfTheWallOnTheRight + plusToX] = WALL;
-        grid[coordinateOfTheWallInFront + plusToY][x + plusToX] = WALL;
-        grid[coordinateOfTheWallOnTheBack + plusToY][x + plusToX] = WALL;
+        if (position.getLeftMeasurement() != 0)
+            grid[y + plusToY][coordinateOfTheWallOnTheLeft + plusToX] = WALL;
+        if (position.getRightMeasurement() != 0)
+            grid[y+ plusToY][coordinateOfTheWallOnTheRight + plusToX] = WALL;
+        if (position.getFrontMeasurement() != 0)
+            grid[coordinateOfTheWallInFront + plusToY][x + plusToX] = WALL;
+        if (position.getBackMeasure() != 0)
+            grid[coordinateOfTheWallOnTheBack + plusToY][x + plusToX] = WALL;
     }
 
     public int[][] getGrid() {
         return grid;
     }
 
-    public static PositionInGrid rotateMeasurements(PositionInGrid position){
-        PositionInGrid positionInGrid = rotateMeasurements(position, position.getCurrentPosition().getDirection());
-        positionInGrid.getCurrentPosition().setX(positionInGrid.getCurrentPosition().getX());
-        positionInGrid.getCurrentPosition().setY(positionInGrid.getCurrentPosition().getY());
-        return positionInGrid;
-    }
+    public static void rotateMeasurements(PositionInGrid position){
+        int leftMeasurement = position.getLeftMeasurement();
+        int rightMeasurement = position.getRightMeasurement();
+        int frontMeasurement = position.getFrontMeasurement();
 
-    public static PositionInGrid rotateMeasurements(PositionInGrid position, Direction direction) {
-        PositionInGrid newPosition = new PositionInGrid();
-        newPosition.setCurrentPosition(position.getCurrentPosition());
-
-        switch (direction) {
+        switch (position.getCurrentPosition().getDirection()) {
             case LEFT:
-                newPosition.setLeftMeasure(position.getFrontMeasurement());
-                newPosition.setRightMeasure(position.getBackMeasure());
-                newPosition.setFrontMeasure(position.getRightMeasurement());
-                newPosition.setRearMeasure(position.getLeftMeasurement());
+                position.setLeftMeasure(frontMeasurement);
+                position.setFrontMeasure(rightMeasurement);
+                position.setRearMeasure(leftMeasurement);
+                position.setRightMeasure(0);
                 break;
             case RIGHT:
-                newPosition.setLeftMeasure(position.getBackMeasure());
-                newPosition.setRightMeasure(position.getFrontMeasurement());
-                newPosition.setFrontMeasure(position.getLeftMeasurement());
-                newPosition.setRearMeasure(position.getRightMeasurement());
+                position.setRightMeasure(frontMeasurement);
+                position.setRearMeasure(rightMeasurement);
+                position.setFrontMeasure(leftMeasurement);
+                position.setLeftMeasure(0);
                 break;
             case BACK:
-                newPosition.setLeftMeasure(position.getRightMeasurement());
-                newPosition.setRightMeasure(position.getLeftMeasurement());
-                newPosition.setFrontMeasure(position.getBackMeasure());
-                newPosition.setRearMeasure(position.getFrontMeasurement());
+                position.setRearMeasure(frontMeasurement);
+                position.setLeftMeasure(rightMeasurement);
+                position.setRightMeasure(leftMeasurement);
+                position.setFrontMeasure(0);
                 break;
-            case FRONT:
-                newPosition = position;
         }
-        return newPosition;
     }
 
     public static int getDistanceInCells(double distance) {

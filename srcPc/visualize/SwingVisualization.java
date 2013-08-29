@@ -1,11 +1,14 @@
 package visualize;
 
 import localization.grid.GridWorld;
+import localization.maze.Direction;
+import localization.maze.DirectionalPoint;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class SwingVisualization extends JPanel implements UpdatableView{
     private GridLayout gridLayout;
@@ -65,8 +68,44 @@ public class SwingVisualization extends JPanel implements UpdatableView{
 
     @Override
     public void updateRobot(int x, int y, int rotation) {
-//        displayedGrid[displayedGrid.length - 1 - y][x].setBackground(Color.CYAN);
+        String direction;
+
+        if (rotation == Direction.FRONT.getDegrees()) direction = "^";
+        else if (rotation == Direction.BACK.getDegrees()) direction = "v";
+        else if (rotation == Direction.LEFT.getDegrees()) direction = "<";
+        else direction = ">";
+
+        JComponent representation = new JLabel(direction);
+        displayedGrid[y][x].add(representation);
         displayedGrid[y][x].setBackground(Color.CYAN);
+
+        this.revalidate();
+        this.repaint();
+    }
+
+    @Override
+    public void updateRoute(List<DirectionalPoint> points) {
+        int i=0;
+        for (DirectionalPoint point : points){
+            String caption = (i++) + ": ";
+            switch (point.getDirection()){
+                case LEFT:
+                    caption += "<";
+                    break;
+                case RIGHT:
+                    caption += ">";
+                    break;
+                case FRONT:
+                    caption += "^";
+                    break;
+                default:
+                    caption += "v";
+            }
+
+            JComponent representation = new JLabel(caption);
+            displayedGrid[point.getY()][point.getX()].add(representation);
+        }
+
         this.revalidate();
         this.repaint();
     }
@@ -113,12 +152,8 @@ public class SwingVisualization extends JPanel implements UpdatableView{
             buttonRunPause.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {
-                    if (pausable.getContinueRun()) {
                         pausable.pause();
                         showMessage("Paused");
-                    } else {
-                        pausable.run();
-                    }
                 }
             });
         } else {
@@ -166,6 +201,9 @@ public class SwingVisualization extends JPanel implements UpdatableView{
 
     public static void main(String[] args) {
         SwingVisualization test = startVisualizer(null);
-        System.out.print(test);
+
+        int[][] grid = new int[][]{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}};
+        test.updateWorld(grid);
+        test.updateRobot(1, 2, 0);
     }
 }

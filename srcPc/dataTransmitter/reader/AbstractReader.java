@@ -35,8 +35,12 @@ public abstract class AbstractReader {
 
         String[] parts = s.split(CODE_DELIMITER);
 
-        if (parts.length != 3){
+
+        if (parts.length < 3){
             throw new BadReadingsException("Bad format \"" + s + "\". Expected exactly 3 parts, but found " + parts.length);
+        }
+        if (parts.length > 3){
+            System.arraycopy(parts, 1, parts, 0, parts.length - 1);
         }
 
         Readings readings = new Readings();

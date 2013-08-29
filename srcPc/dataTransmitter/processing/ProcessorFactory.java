@@ -13,6 +13,8 @@ public class ProcessorFactory {
             return new RobotPositionProcessor();
         } else if (MessageDataProcessor.getCode().equals(code)){
             return new MessageDataProcessor();
+        } else if (RouteProcessor.getCode().equals(code)){
+            return new RouteProcessor();
         }
 
         throw new IllegalArgumentException("No processor for code " + code);
