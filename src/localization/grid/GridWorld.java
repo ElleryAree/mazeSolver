@@ -40,14 +40,14 @@ public abstract class GridWorld {
     public GridWorld(MazePoint goal, int initialValue) {
         int length = Math.abs(goal.getY());
         int width = Math.abs(goal.getX());
-        this.goal = new MazePoint(goal.getX() > 0 ? width - 1 : 0, goal.getY() > 0 ? length - 1 : 0);
+        this.goal = new MazePoint(goal.getX() > 0 ? width : 0, goal.getY() > 0 ? length : 0);
         this.initialValue = initialValue;
 
-        grid = initGrid(length, width);
+        grid = initGrid(length + 1, width + 1);
 
         robotLocation = new DirectionalPoint(Direction.FRONT,
-                goal.getX() <= 0 ? width - 1 : 0,
-                goal.getY() <= 0 ? length - 1 : 0);
+                goal.getX() <= 0 ? width : 0,
+                goal.getY() <= 0 ? length : 0);
     }
 
     private int[][] initGrid(int length, int width) {
